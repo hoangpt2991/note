@@ -1,0 +1,82 @@
+8-Jan-2020
+
+=====================Tomcat ========================
+
+Flow: Github --> jenkins(git repo,mvn: clean install) --> Jenkins run & build --> check link web
+
+
+bin - chua file script
+conf/server.xml doi port web (default 8080)
+webapps: deploy moi file war
+
+
+script start/stop tomcat: catalina va startup (sh va bash)
+
+
+viet script de start/stop
+Option1:
+chmod +x /u01/training/scripts/tomcat_start.sh
+
+script content:  /u01/training/apache-tomcat-8.5.47/bin/catalina.sh start
+
+Option2:
+ps -ef|grep java
+
+check PID number
+
+kill -9 <PID>
+
+Option 3:
+ps -ef | grep apache-tomcat-8.5.47 | grep -v grep | awk '{print $2}' | xargs kill
+/u01/training/scripts/tomcat_stop.sh
+
+cau hinh jenkin
+========================code shell script========================================
+ bash /home/u006/u1/u006/training/apache-tomcat-8.5.47/bin/catalina.sh stop
+#remove file from these directory
+ rm -rf /home/u006/u01/training/apache-tomcat-8.5.47/logs/*
+ rm -rf /home/u006/u01/training/apache-tomcat-8.5.47/temp/*
+ rm -rf /home/u006/u01/training/apache-tomcat-8.5.47/webapps/*
+
+
+
+#copy file ${WORKSPACE}/target/training.war
+sudo cp ${WORKSPACE}/target/training.war /home/u006/u1/u006/training/apache-tomcat-8.5.47/webapps/fresher2_training
+
+#start service
+ bash /tmp/start_tc.sh
+
+========================code shell script========================================
+
+truy cap den training.war
+training.war -> fresher1_training.war
+http://localhost:9010/training
+http://localhost:9010/fresher1_training
+
+Tao service:
+
+
+===========================JBOSS
+####heapsize: chinh maxium memory
+http://localhost:9010/fresher1_training
+
+ten file giong voi prefix
+172.17.0.5:9010/fresher2_training
+
+
+
+Tao service:
+
+jboss_home/standalone/configuration/standalone.xml
+script start: jboss_home/bin/standalone.bat
+jboss_home/bin/standalone.sh
+jboss_home/standalone/deployment/training.war
+
+dau hieu thanh cong: hien chu deploy
+training.war.deployed
+training.war.failed
+
+
+
+
+========================Proxy==================================
