@@ -1,3 +1,5 @@
+#########################Basic#############################
+###########################################################
 1. install a new container with nginx image on fg
 docker container run --publish 8888:80 nginx   #[localhost:80]  ==> browser access: localhost:8888
 
@@ -58,3 +60,63 @@ docker container inspect <name of container>
 
 13. show live performance data all containers
 docker container stats -a
+
+
+
+
+
+#########################Advance###########################
+###########################################################
+
+1. Pulling image and run container
+=> docker image pull <name of service>
+=> docker image ls
+#create a container using pulled image
+=> docker container run -id --name demo alpine ash // image=alpine, command=ash
+2. Starting a container 
+=> docker container run -d -t -i ubuntu /bin/bash
+
+3. Looking at the container logs
+=> docker container run -d ubuntu /bin/bash -c "while [ true ]; do date; sleep 1; done"
+
+4. Stopping/Start/Restart a container
+=> docker stop $ID/$name
+5.
+=>
+6.
+=>
+7.
+=>
+8.
+=>
+9.
+=>
+
+10. Reading a container's metadata: While doing debugging, automation, and so on, we will need the container's configuration
+details. Docker provides the container inspect command to get those easily.
+
+=> ID=$(docker container run -d -i ubuntu /bin/bash)
+=> docker container inspect $ID
+
+
+* Filter IP of container: 
+=> docker container inspect --format='{{.NetworkSettings.IPAdress}}' $ID
+
+
+11.Add labeling and filtering containers
+#show all image list
+=> docker image ls
+#add labels
+=> docker container run --label com.example.container=docker-cookbook label-demo date
+#run docker container list again
+
+=> docker container ls -a
+=> docker container ls -a --filter label=com.example.image=docker-cookbook
+
+12. Find Zombies process: Docker is designed to run one process per container and usually the process 
+running inside the containers doesn't create child processes. However, if the process inside
+the container creates child processes, then an init system is needed to reap zombie processes
+=> docker container run --rm alpine pstree -p
+=> docker container run --rm alpine sh -c "pstree -p"
+=> docker container run --rm --init alpine pstree -p
+=> docker container run --rm --init alpine sh -c "pstree -p"
