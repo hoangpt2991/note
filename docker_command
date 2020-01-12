@@ -1,0 +1,60 @@
+1. install a new container with nginx image on fg
+docker container run --publish 8888:80 nginx   #[localhost:80]  ==> browser access: localhost:8888
+
+2. install a new container with nginx image on bg
+docker container run --publish 8888:80 --detach nginx # --detach run in bg
+
+3.List container in server
+docker container ls -a  #-a: all
+
+4. Stop container
+docker container stop <id>
+
+5.
+ docker container run --publish 8888:80 --detach --name test_tag_name nginx  #name tag
+
+6. Monitor logs of a container
+
+docker container logs test_tag_name  #   'test_tag_name' of name container
+
+7. Monitor top process of a container
+
+docker container top test_tag_name
+
+8. Remove one or multi container
+
+
+docker container rm <ID container 1> <....>
+
+
+docker container rm -f <ID container 1> <....> # in cases, containers are running
+
+9.
+
+docker container run --publish 8080:80 --name webhost -d nginx:1.11 nginx -T 
+#Option 
+#nginx:1.11 is version of nginx
+#-T : change CMD run on start
+#-d: run in background
+#--publish or -p
+
+
+10: docker ps vs docker ls -a
+
+
+
+
+
+
+11.
+
+docker container run -d -p 3306:3306 --name db -e MYSQL_RANDOM_PASSWORD=yes mysql
+#-e: edit parameter of ....
+
+12. show data about the container
+(volumes,config,port,etc)
+
+docker container inspect <name of container>
+
+13. show live performance data all containers
+docker container stats -a
