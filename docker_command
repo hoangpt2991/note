@@ -61,7 +61,22 @@ docker container inspect <name of container>
 13. show live performance data all containers
 docker container stats -a
 
+14. Docker Network
 
+docker network ls
+docker network inspect <argument>
+
+docker network create <name of network> #bridge mode
+docker network connect <ID of network> <ID of name container>
+
+#assign a network to new container  #bridge mode
+docker container run -d -p 3306:3306 --name db --network <name of created network> mysql
+
+15. Ping host
+
+docker container exec -it <container1> ping <container2>
+
+16. Docker Image
 
 
 
