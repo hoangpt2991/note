@@ -41,10 +41,10 @@ docker container run --publish 8080:80 --name webhost -d nginx:1.11 nginx -T
 #--publish or -p
 
 
-10: docker ps vs docker ls -a
+10: docker ps vs docker container ls -a
 
-
-
+docker container ls # show container is running
+docker container ls -a #show all container
 
 
 
@@ -78,7 +78,11 @@ docker container exec -it <container1> ping <container2>
 
 16. Docker Image
 
+17. Data volume
 
+docker container run -d --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v mysql-db:/vaf/lib/mysql mysql
+docker volume ls
+docker volume inspect <volume name>
 
 #########################Advance###########################
 ###########################################################
