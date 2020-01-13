@@ -66,7 +66,8 @@ docker container stats -a
 docker network ls
 docker network inspect <argument>
 
-docker network create <name of network> #bridge mode
+docker network create <name of network> --driver <overlay,host,null,bridge>
+docker network create <name of network> #bridge mode default
 docker network connect <ID of network> <ID of name container>
 
 #assign a network to new container  #bridge mode
@@ -83,6 +84,8 @@ docker container exec -it <container1> ping <container2>
 docker container run -d --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v mysql-db:/vaf/lib/mysql mysql
 docker volume ls
 docker volume inspect <volume name>
+
+18.
 
 #########################Advance###########################
 ###########################################################
