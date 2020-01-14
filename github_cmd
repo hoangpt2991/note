@@ -1,3 +1,242 @@
+_________________________________Basic_____________________________________________
+Note: HEAD, Working tree, Index trong git là gì?
+
+-Git giữ một con trỏ đặc biệt có tên HEAD. Trong Git, đây là một con trỏ tới nhánh nội bộ mà bạn đang làm việc
+-Trên Git, những thư mục được đặt trong sự quản lý của Git mà mọi người đang thực hiện công việc trong thực
+tế được gọi là working tree.
+-Giữa repository và working tree tồn tại một nơi gọi là index. Index là nơi để chuẩn bị cho việc 
+commit lên repository
+
+
+
+1. Fork, clone
+git clone <link github>.git
+
+2. Tao remotes
+git remote -v
+==> 
+origin link (fetch)
+origin link (push)Tạo remote mới cho super-project
+
+git remote add company super-project-link
+
+#xoa origin remote
+git remote remove origin
+
+#Và cuối cùng add lại origin cho sub-project
+git remote add origin sub-project-link
+2.1 Khoi tao git: git init
+2.2 Cap nhat code moi: git pull origin <branch>
+2.3 Hop nhat branch
+# để hợp nhất nhánh branch-name vào nhánh master
+git merge <branch-name>
+2.4 Check status:
+git status
+#Xem thay đổi (chưa đc add) của những file hiện tại
+git diff 
+
+#Xem thay đổi (đã được add, chưa commit)
+git diff --cached
+
+
+#Xem thay đổi giữa local mà master
+git diff origin/master
+
+#Xem thay đổi giữa hai commits
+git diff COMMIT1_ID COMMIT2_ID
+
+#Xem những files thay đổi giữa hai commits
+git diff --name-only COMMIT1_ID COMMIT2_ID
+
+#Xem thay đổi trước khi push
+git diff --cached origin/master
+
+Xem thông tin cụ thể của một commit
+git show COMMIT_ID
+3.Branch
+#super-project có 2 branch là master(mặc định) và develop
+#và mình sẽ chỉ code trên develop branch, còn chỉ khi release xong
+#các mốc cố định thì mới merge code từ develop vào master.
+
+#create branch
+git checkout -b <new branch>
+
+#change name of branch
+git branch -m <tên branch sau khi đổi>
+
+# Danh sách branch
+git branch
+ 
+# tạo mới branch
+git branch (<name>)
+ 
+# Di chuyển từ branch hiện tại đến một branch khác bằng tên branch đó
+git checkout <name>
+ 
+# Tạo và di chuyển từ branch hiện tại đến một branch mới
+git checkout -b <name>
+----------------------File
+
+#remove a commit
+git commit -am "implement search ui"
+
+#check changed file
+git status
+
+#add all file to commit
+git add .
+
+#add single file
+git add <name of file>
+
+--------------------------Lam viec voi commit
+
+# Tuỳ vào từng trường hợp mà ta có 3 cách sau để đưa lịch sử commit về như cũ
+ 
+# 1. Chỉ đưa HEAD về như cũ
+$ git reset --soft HEAD~
+ 
+# 2. Đưa HEAD và index về như cũ
+$ git reset HEAD~
+ 
+# 3. Đưa cả index, working tree về 1 commit trước đó
+$ git reset --hard HEAD~
+
+#Nếu thay đổi lịch sử commit sẽ dẫn đến tình trạng lộn xộn nên ta cầm dùng commit xoá để giải quyết:
+git revert <commit>
+
+#Khi lỡ tay commit nhầm sang một branch khác
+# Đầu tiên là tạo một branch khác chứa trạng thái mà ta đã commit
+$ git branch other-branch
+ 
+# Đưa HEAD, index của master về 1 commit trước đó
+$ git reset --hard HEAD~
+ 
+# Check out sang branch có commit trước đó
+$ git checkout other-branch
+
+###############################xoa cac file khong can thiet
+# Đầu tiên là add＆commit tất cả những thứ cần thiết lại
+# Nếu không làm như thế này thì những file này cũng bị xoá mất đó
+$ git add <file cần commit>
+$ git commit -m "commit message"
+ 
+# Dùng git stash để sơ tán cả những file untracked
+$ git stash -u
+ 
+# drop các thứ đã stash để xoá đi
+$ git stash drop
+
+# Kiểm tra lại các file sẽ xoá cho chắc
+$ git clean -n
+ 
+# Tiến hành xoá bỏ
+$ git clean -f
+####################################
+
+Issue: Khi lỡ tay xoá mất một commit cực kì cực kì quan trọng (git reset --hard)
+
+# Đầu tiên là xem lại toàn bộ lịch sử commit
+$ git reflog
+ 
+# Từ đó chọn commit muốn phục hồi và khôi phục lại
+# ví dụ）git reset --hard HEAD@{2}
+$ git reset --hard <commit>
+*************END*************
+
+Issue: Khi lỡ tay xoá mất branch và muốn lấy lại
+# Đầu tiên là xem lại toàn bộ lịch sử commit
+$ git reflog
+ 
+# Từ các commit này, chọn rồi tạo branch mới
+# ví dụ）git branch new-branch HEAD@{2}
+$ git branch <tên branch> <commit>
+*************END*************
+
+Issue: Khi có conflict trong quá trình rebase
+#Khi không merge mà tiến hành rebase thì nếu có conflict, chắc hẳn là hoảng loạn rồi:
+
+# Khi đang ở branch1 rồi rebase từ branch2 vào
+$ git rebase branch2
+ 
+~~ Phát sinh conflict ~~
+ 
+# Sẽ trở thành branch không tên nền cần phải chú ý
+$ git branch
+ 
+* (no branch, rebasing branch2)
+  branch1
+  branch2
+  master
+ 
+# Hãy cố gắng giải quyết các conflict
+ 
+# Sau khi hoàn thành, ta add rồi tiến hành rebase
+$ git add <tên file>
+ 
+# Thay đổi commit
+$ git commit --amend
+ 
+$ git rebase --continue
+*************END*************
+
+
+
+Issue: Khi đã merge nhưng lại muốn trở lại như lúc trước
+# tiến hành merge
+$ git checkout <tên brach nguồn>
+$ git merge <tên branch muốn merge>
+ 
+# Sau khi merge, nhưng lại muốn trở lại như trước thì làm như sau
+# Nếu chỉ định là ORIG_HEAD thì có thể trở lại trạng thái trước khi merge
+$ git reset --hard ORIG_HEAD
+*************END*************
+
+Issue: Lỡ tay push force lên master trên remote
+ 
+# Cái này ko được làm đâu nhé, push force
+$ git commit -m "commit message"
+$ git push -f origin master
+ 
+# Nếu là một công ty nghiêm túc thì đến đây chắc chắn sẽ nổi giận đấy
+ 
+# Nếu muốn đưa về 1 commit tước đó thì làm như sau
+$ git push -f origin HEAD~:master
+
+##local
+
+$ git reset HEAD~
+$ git push -f origin master
+*************END*************
+
+
+=================> Process <====================
+#Xong phần commit code, đến phần rebase những code đã thay đổi đó đến develop branch để xem có xung đột với code của develop không, 
+#vì team có nhiều người, đôi lúc người ta cũng thay đổi code ở chỗ mình thay đổi, và nếu code của người ta đã được merged trước 
+#vào develop thì code của mình đã trở nên cũ và gây xung đột, cho nên, bắt buộc phải rebase code trong mọi trường hợp tạo pull request.
+
+-Trước hết phải chuyển qua develop branch: git checkout develop
+-Sau đó, pull code mới nhất từ develop về: git pull company develop
+-Sau khi pull xong thì chuyển qua lại search_ui của chúng ta: git checkout search_ui
+-Tiếp, rebase code với develop: git rebase -i develop
+-Check trạng thái của branch: git status
+-Nếu thành công thì mọi chuyện đều tốt đẹp, nhưng lỡ may bị conflict thì sẽ hiện 1 danh sách các file bị xung đột. 
+Nhiệm vụ của chúng ta là sửa từng file đó, thống nhất code cũ và mới. Khi đã sửa xong toàn bộ thì chạy thử project,
+nếu chạy được ngon lành thì tiếp tục các bước sau, nếu chưa chạy được thì xem lại các file đã sửa rồi giải quyết vấn đề.
+git add .
+ 
+//hoặc
+  
+git add changed_file_link_1
+git add changed_file_link_2
+
+-Sau đó tiếp tục rebase: git rebase --continue
+-Xong phần rebase, bước cuối cùng dưới project là push code đó lên github của mình, 
+chính là origin remote mà mình tạo ở trên: git push origin search_ui -f
+
+source
+https://topdev.vn/blog/combo-cac-lenh-git-du-dung-trong-mot-du-an-cho-nguoi-moi-bat-dau/
+__________________________________Fix_________________________________________________
 # Rename the local branch to the new name
 git branch -m <old_name> <new_name>
 
@@ -118,5 +357,8 @@ or
 git reset --hard ORIG_HEAD
 
 
-source: https://topdev.vn/blog/mot-vai-kho-khan-sai-lam-su-co-voi-git-toi-tung-gap-phai-va-toi-da-giai-quyet-no-the-nao/?fbclid=IwAR16sNdLQuu6Qa5B9GW3hGmnrBs3OBYteItD7yOQu8iyuAnkOzQmVQZxG9I
- 
+source: 
+https://topdev.vn/blog/19-bi-kip-khi-pham-sai-lam-voi-git-ban-co-the-dung/
+https://topdev.vn/blog/mot-vai-kho-khan-sai-lam-su-co-voi-git-toi-tung-gap-phai-va-toi-da-giai-quyet-no-the-nao/?fbclid=IwAR16sNdLQuu6Qa5B9GW3hGmnrBs3OBYteItD7yOQu8iyuAnkOzQmVQZxG9I
+https://topdev.vn/blog/mot-so-cau-hoi-ve-git-cho-nguoi-moi-tap-tanh/
+https://topdev.vn/blog/tap-hop-nhung-cau-lenh-git-huu-dung/
