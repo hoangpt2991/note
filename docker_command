@@ -117,7 +117,26 @@ docker service update --secret-rm
 21. Update things
 
 docker service update --publish-rm 8080 --public-add 9090:80 <name>
+docker service update --replicas 3 <ID>
 
+
+22. Docker swarm
+
+docker swarm init
+docker node ls
+
+#docker swarm join to cluster
+#step 1: create 3 nodes
+#step 2: configure this statement on #1 node which is leader
+docker swarm init
+#step 2.2: copy from this line:
+docker swarm join \ content sample..........................IP:port 
+#step 3: paste it to node 2 & 3 #node 2 & 3 are in worker role now
+#step 4: check on node 1
+docker node ls
+
+optional: update role of node 'N' to become manager
+docker node update --role manager <hostname of node>
 
 #########################Advance###########################
 ###########################################################
