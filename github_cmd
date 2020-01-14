@@ -1,0 +1,122 @@
+# Rename the local branch to the new name
+git branch -m <old_name> <new_name>
+
+# Delete the old branch on remote - where <remote> is, for example, origin
+git push <remote> --delete <old_name>
+ 
+# Or shorter way to delete remote branch [:]
+git push <remote> :<old_name>
+ 
+# Push the new branch to remote
+git push <remote> <new_name>
+ 
+# Reset the upstream branch for the new_name local branch
+git push <remote> -u <new_name>
+
+$ git commit --amend
+# Then, change commit message
+
+git reset --soft HEAD^     # Use --soft if you want to keep your changes
+git reset --hard HEAD^     # Use --hard if you don't care about keeping the changes you made
+
+
+Lưu ý nếu đã push lên và người khác đã pull về hay base trên nhánh của bạn thì không nên dùng cách trên mà hãy dùng
+git revert <hash_commit> #nó sẽ tạo một commit xóa những gì bạn đã làm việc trên commit đó.
+
+
+ Loại file ra khỏi commit vừa tạo
+ 
+ git reset --soft HEAD^ 
+ 
+# or
+ 
+git reset --soft HEAD~1
+ 
+# Then reset the unwanted files in order to leave them out from the commit:
+git reset HEAD path/to/unwanted_file
+ 
+# Now commit again, you can even re-use the same commit message:
+git commit -c ORIG_HEAD
+ 
+Cách trên thì nguy hiểm quá, như này dễ hơn nè =))
+
+git reset HEAD^ -- path/to/file
+git commit --amend --no-edit
+
+
+Khi bạn commit nhầm vào một nhánh khác
+
+# Get commit hash 
+ 
+# Switched to destination branch
+git checkout destination_branch
+ 
+$ git cherry-pick <commit_hash>
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Chuyển các commit từ branch này sang branch khác
+
+master A - B - C - D - E
+
+newbranch     C - D - E
+             /
+master A - B
+
+Trường hợp đã có nhánh đó rồi
+
+git checkout existingbranch
+git merge master         # Bring the commits here
+git checkout master
+git reset --keep HEAD~3  # Move master back by 3 commits.
+git checkout existingbranch
+
+-----------------------------------------------------------------------------
+Trường hợp muốn cắt 3 commit kia sang nhánh mới
+
+git branch newbranch      # Create a new branch, containing all current commits
+git reset --keep HEAD~3   # Move master back by 3 commits (Make sure you know how many commits you need to go back)
+git checkout newbranch    # Go to the new branch that still has the desired commits
+# Warning: after this it's not safe to do a rebase in newbranch without extra care.
+
+Giả sử ta ta có
+C commit: 9aa1233
+D commit: 453ac3d
+E commit: 612ecb3
+ 
+ 
+git checkout newbranch
+git cherry-pick 612ecb3~1..9aa1233
+ 
+# git cherry-pick applies those three commits to newbranch.
+-----------------------------------------------------------------------------
+
+Nhỡ tay xóa commit và muốn khôi phục lại
+
+Khi bạn nhỡ tay git reset --hard HEAD~1 và phát hiện ngay thì chỉ cần sử dụng ngay git reset --hard HEAD@{1}
+Còn không thì hãy bình tĩnh xem lịch sử các commit bằng lệnh git reflog Sau đó tìm commit muốn phục và
+khôi phục bằng lệnh git reset --hard <commit_hash>
+
+Khi lỡ tay xoá mất branch và muốn lấy lại
+
+Khi bạn đã commit rồi thì chứ yên tâm sẽ chẳng bao giờ có thể mất được code đâu chứ bình tĩnh =)) 
+Đầu tiên hãy xem lại hết lịch sử commit bằng cách git reflog hãy tìm commit bạn đã commit ở branch bạn xóa, 
+sau đó sử dụng git branch <new_branch> <commit_hash> ta có thể thay commit hash bằng HEAD@{n}
+
+
+Sau khi merge mà không tự tin lắm muốn trở lại trước lúc merge
+
+ 
+git reset --hard ORIG_HEAD
+
+
+
+
+Nhỡ pull về mà conflic nhiều quá, fix không nổi nản quá muốn trở lại
+
+git merge --abort
+or
+git reset --hard ORIG_HEAD
+
+
+source: https://topdev.vn/blog/mot-vai-kho-khan-sai-lam-su-co-voi-git-toi-tung-gap-phai-va-toi-da-giai-quyet-no-the-nao/?fbclid=IwAR16sNdLQuu6Qa5B9GW3hGmnrBs3OBYteItD7yOQu8iyuAnkOzQmVQZxG9I
+ 
