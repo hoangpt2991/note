@@ -113,6 +113,12 @@ POSTGRES_USER_FILE=/run/secrets/psql_user postgres
 
 
 docker service update --secret-rm
+
+21. Update things
+
+docker service update --publish-rm 8080 --public-add 9090:80 <name>
+
+
 #########################Advance###########################
 ###########################################################
 
