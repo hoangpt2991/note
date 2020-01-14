@@ -85,8 +85,34 @@ docker container run -d --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v mysql
 docker volume ls
 docker volume inspect <volume name>
 
-18.
+18. 
+docker service ls
+docker service ps <name>
 
+
+19. 
+docker stack ls
+
+#Update configure file docker stack .yml
+docker stack deploy -c <name of file stack>.yml <name of stack>
+
+20. Secrets storage: usernames and pass, TLS cert and keys, SSH key
+
+
+#docker secrete create <name of secret> <file>.txt
+docker secrete create psql_user <file>.txt
+
+
+echo "Acdfsljf" | docker secret create psql_pass
+
+docker secret ls
+
+docker service create --name psql --secret <name of secret user above> 
+--secret <name of secret pass> -e POSTGRES_PASSWORD_FILE=/run/secrets/psql_pass -e 
+POSTGRES_USER_FILE=/run/secrets/psql_user postgres
+
+
+docker service update --secret-rm
 #########################Advance###########################
 ###########################################################
 
