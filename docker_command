@@ -137,7 +137,7 @@ docker node ls
 
 optional: update role of node 'N' to become manager
 docker node update --role manager <hostname of node>
-
+docker swarm join-token manager #xem lai token de join cluster
 #########################Advance###########################
 ###########################################################
 
