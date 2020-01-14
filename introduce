@@ -1,0 +1,51 @@
+================CI (Continuous Integration): 
+
+Một hình thức trong việc phát triển phần mềm,
+các developer thường gộp hoặc chuyển các thay đổi trong code về một repo master, 
+và các build và test sau đó sẽ tự động chạy.
+Mục tiêu của CI đó là tìm bug nhanh hơn từ sớm, cải thiện chất lượng phần mềm, 
+và giản thiểu thời gian để xác thực và ra mắt các update mới.
+
+
+
+================CD (Continuous Deployment) :
+
+Mọi thay đổi được duyệt qua test sẽ tự động được triển khai trên production. 
+Nghĩa là bạn pull bản build mới nhất ngay hoặc tìm repo mới nhất đã được test và tiến hành deploy trên production. 
+CD là một cách tuyệt vời để tăng tốc quá trình deploy sản phẩm liên tục để đáp ứng các yêu cầu liên tục của khách hàng.
+
+
+================Xây dựng kiến trúc (Infrastructure as code) hệ thống như là code: 
+
+Định nghĩa này hơi khó hiểu, có thể hiểu như là một phương pháp để đảm bảo rằng bạn có thể maintain chất lượng version control 
+trong khi sử dụng CI. 
+Infrastructure cần được cấu hình tự động hoàn toàn để các server được chuẩn hóa các bản patch và version mới nhất.
+
+
+================Communication và Collaboration:
+
+Collaboration và communication là các nhân tố bí ẩn giúp doanh nghiệp phát triển và đánh giá DevOps. 
+Nó đẩy nhanh quá trình phát triển, vận hành và cả các team khác như marketing, sales,
+cho phép các bộ phận của tổ chức tiến gần hơn với việc đạt được mục tiêu.
+
+
+---------------------------Lợi ích của DevOps
+Tốc độ : DevOps giúp các developers và team operations đạt được mục tiêu ở một tốc độ khác giúp cải tiến sản phẩm nhanh chóng
+phục vụ người dùng, thích nghi với thị trường tốt hơn và điểu chỉnh hiểu quả kinh doanh hiệu quả hơn.
+
+Chuyển giao nhanh chóng: Tăng tốc độ release thường xuyên để chúng ta cải thiện sản phẩm nhanh hơn và cho ra mắt các feature nhanh hơn 
+cũng như fix bug, giúp phản hồi cho khách hàng nhanh chóng và xây dựng nên lợi thế cạnh tranh tốt hơn.
+
+Độ tin cậy : DevOps đảm bảo chất lượng bằng cách áp dụng CI /CD, Monitoring và logging process. Bằng cách update mà team infrastructure 
+cấp quyền cho team development để chuyển giao nhanh hơn mà vẫn duy trì được trải nghiệm người dùng tốt.
+
+Mở rộng : Team vận hành, quản lý infra và các quy trình. Lên kế hoạch về quy mô và nâng cấp môi trường giúp quản trị các hệ thống phức 
+tạp hoặc hay thay đổi hiệu quả cũng như giảm thiểu rủi ro.
+
+Bảo mật : DevOps giúp di chuyển mà không chịu tổn thất về bảo mật bằng các chính sách, kiểm soát và phương pháp quản lý configuration. 
+Thậm chí các team có thể kêu gọi bạn theo các tiêu chuẩn từ sớm bằng cách cung cấp các setup các tool theo dõi.
+
+
+Mindmap:
+Credit: https://github.com/kamranahmedse/developer-roadmap#devops-roadmap
+Source: https://topdev.vn/blog/devops-la-gi/
