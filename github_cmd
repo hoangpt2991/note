@@ -15,6 +15,29 @@ git config --global user.email "your_email@example.com"
 1. Fork, clone
 git clone <link github>.git
 
+
+############Fork: Tại một thời điểm, chúng ta muốn phân phối project của ai đó, hay chúng ta muốn sử dụng project của một ai đố 
+để bắt đầu. Điều này được định nghĩa là forking. Trong phần này, chúng ta sẽ forking một repo tên là awesome.
+
+St1.  Để forking một project, click vào button fork trong github repo
+St2. Sau khi fork một repo, tức là repo đó đã tồn tại trên github repo của chúng ta, 
+chúng ta có thể clone repo đó về local repo. Sử dụng lệnh sau:
+$ git clone https://github.com/your_username/awesome.git
+# Clone repo mà chúng ta đã fork về github repo của mình vào thự mục hiện tại.
+# your_username/awesome.git là repo chúng ta fork về, còn NgaNguyenDuy/awesome là repo gốc.
+
+St3. Khi một repo đã được clone, nó sẽ có một remote origin trỏ đến repo mà chúng ta fork về github của mình,chứ không phải là repo gốc. 
+Để theo dõi (keep track) repo gốc mà đã fork, chúng ta cần add một remote khác có tên là upstream:
+
+$ cd awesome
+ 
+$ git remote add upstream https://github.com/NgaNguyenDuy/awesome.git
+# Gán repo gốc vào một remote tên là upstream
+ 
+$ git fetch upstream
+ 
+https://techtalk.vn/huong-dan-su-dung-git-tren-linux-window.html
+
 2. Tao remotes
 git remote -v
 ==> 
