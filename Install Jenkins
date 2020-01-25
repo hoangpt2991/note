@@ -7,17 +7,29 @@
 + Java 
 (cat install_silent.bat ==> jre-8u241-windows-x64.exe /s   [// auto install] )
 + File *.msi: manual install
-###########################Linux###########################
 
+3. install jenkins
 
-Set up Envinronment
-Windows
+*******************Set PATH: (Set up Envinronment)
+Windows:
 1.	Windows 7: Right click My Computer and select Properties.
 Windows 8 and 10: Go to Control Panel > System > Advanced System Settings
 2.	On the Advanced tab, select Environment Variables, and then find a Systems Variable called Path and add to it the path 
 for your \bin file, for example C:\Program Files\apache-maven-3.5.0\bin.
 3.	Check you have set the variable correctly by opening up command prompt (run + cmd) and typing mvn -version. 
 The output should show your Maven version.
+
+Case: "Fixing “mvn not recognized as an internal or external command” error"
+Part 1: set up in Path env
+M2_HOME: This is supposed to be a user variable that points towards your Maven directory.
+M2: This is an environment variable that points towards Maven’s bin folder. Example: $M2_HOME/bin
+Part 2: Set up on jenkins browser
+Manage Jenkins -> Global Tool Configuration -> Maven: set up name and MAVEN_HOME:[PATH]
+
+###########################Linux###########################
+
+
+
 Linux
 1.	Open the command terminal and enter the following
 $ export M2_HOME=/usr/local/apache-maven/apache-maven-3.3.9
