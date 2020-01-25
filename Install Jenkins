@@ -1,0 +1,34 @@
+###########################Windows###########################
+1. Chuan bi:
++ Java: 1.8.x
++ File: jenkins, maven
+
+2. File 
++ Java 
+(cat install_silent.bat ==> jre-8u241-windows-x64.exe /s   [// auto install] )
++ File *.msi: manual install
+###########################Linux###########################
+
+
+Set up Envinronment
+Windows
+1.	Windows 7: Right click My Computer and select Properties.
+Windows 8 and 10: Go to Control Panel > System > Advanced System Settings
+2.	On the Advanced tab, select Environment Variables, and then find a Systems Variable called Path and add to it the path 
+for your \bin file, for example C:\Program Files\apache-maven-3.5.0\bin.
+3.	Check you have set the variable correctly by opening up command prompt (run + cmd) and typing mvn -version. 
+The output should show your Maven version.
+Linux
+1.	Open the command terminal and enter the following
+$ export M2_HOME=/usr/local/apache-maven/apache-maven-3.3.9
+$ export M2=$M2_HOME/bin
+$ export MAVEN_OPTS=-Xms256m -Xmx512m
+2.	Now append the M2 variable to the system path.
+$ export PATH=$M2:$PATH
+3.	Check maven installed correctly, by running this command in a terminal: mvn -version. The output should show your Maven version.
+
+
+
+--------------------------------------------------------------
+
+
