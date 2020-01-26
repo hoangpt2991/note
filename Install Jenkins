@@ -9,8 +9,11 @@
 + File *.msi: manual install
 
 3. install jenkins
++ Run file.
 
-*******************Set PATH: (Set up Envinronment)
+
+
+*******************(Set up Envinronment)*******************(
 Windows:
 1.	Windows 7: Right click My Computer and select Properties.
 Windows 8 and 10: Go to Control Panel > System > Advanced System Settings
@@ -26,11 +29,8 @@ M2: This is an environment variable that points towards Maven’s bin folder. Ex
 Part 2: Set up on jenkins browser
 Manage Jenkins -> Global Tool Configuration -> Maven: set up name and MAVEN_HOME:[PATH]
 
-###########################Linux###########################
+Linux:
 
-
-
-Linux
 1.	Open the command terminal and enter the following
 $ export M2_HOME=/usr/local/apache-maven/apache-maven-3.3.9
 $ export M2=$M2_HOME/bin
@@ -42,5 +42,27 @@ $ export PATH=$M2:$PATH
 
 
 --------------------------------------------------------------
+Set up Master&Slave:
+case 1: Window & Linux (Master - slave)
+Manage Jenkins -> Manage nodes -> New Node
++ Step 1: 
+-"Node name" ten cua node slave
+-stick "Permanent agent"
++ Step 2: 
+-Name:ten cua may slave
+-of executors: so luong core xu ly task
+-remote root directory: ten thu muc lam viec tren may chu Slave
+-Launch method: via SSH or Java web.
+----->Host: IP of slave host
+----->Credentials: Add Jenkins --> user and password of an account on slave host
+----->Host Key Verification Strategy: Non verifying.......
+-Node Properties:
+----->Tool Location: set up tool lien quan nhu Maven,git,etc....
+=> SAVE and check
 
 
+case 2: Linux & Window (Master - slave)
+
+case 3: Window (Master - slave)
+
+case 4: Linux (Master - slave)
