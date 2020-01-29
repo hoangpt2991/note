@@ -48,6 +48,11 @@ Manage Jenkins -> Manage nodes -> New Node
 + Step 1: 
 -"Node name" ten cua node slave
 -stick "Permanent agent"
+-Configure Global Security > stick "TCP port for inbound agents - Random"
+OR
+Manage Jenkins => Configure Global Security => Enable security 
+=> TCP port for JNLP agents Set it to either Fixed (for this option also set the port number) or Random.
+
 + Step 2: 
 -Name:ten cua may slave
 -of executors: so luong core xu ly task
@@ -63,6 +68,11 @@ Manage Jenkins -> Manage nodes -> New Node
 
 case 2: Linux & Window (Master - slave)
 
+
+
 case 3: Window (Master - slave)
+manage plugin --> Install plugins: "Slave SetupPlugin"
+
+
 
 case 4: Linux (Master - slave)
