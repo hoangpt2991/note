@@ -41,7 +41,7 @@ $ export PATH=$M2:$PATH
 
 
 
---------------------------------------------------------------
+-----------------------set up master slave MODE---------------------------------------
 Set up Master&Slave:
 case 1: Window & Linux (Master - slave)
 Manage Jenkins -> Manage nodes -> New Node
@@ -76,3 +76,13 @@ manage plugin --> Install plugins: "Slave SetupPlugin"
 
 
 case 4: Linux (Master - slave)
+
+
+---------------------------Set UP Mail notification------------------------------
+
+
+SMTP server	: smtp.gmail.com
+User Name: xxxx@gmail.com
+Password: abcdef
+SMTP Port: 587
+TLS/SSL: Required.
