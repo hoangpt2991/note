@@ -79,10 +79,23 @@ case 4: Linux (Master - slave)
 
 
 ---------------------------Set UP Mail notification------------------------------
-
++++++++++++++=Manage Jenkins --> Configure system
 
 SMTP server	: smtp.gmail.com
 User Name: xxxx@gmail.com
 Password: abcdef
-SMTP Port: 587
+SMTP Port: 587 or 465
 TLS/SSL: Required.
+
++++++++++++++Configure a project to send email at every build
+
+Click “Add post-build action”
+Click “Editable Email Notification”
+Click “Advanced Settings…”
+Click “Add Trigger”
+Click “Always”
+Save
+
+NOTICE: Disale quyen bao mat tren tai khoan gmail.
+https://www.360logica.com/blog/email-notification-in-jenkins/
+
