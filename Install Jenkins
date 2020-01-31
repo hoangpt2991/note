@@ -72,7 +72,8 @@ case 2: Linux & Window (Master - slave)
 
 case 3: Window (Master - slave)
 manage plugin --> Install plugins: "Slave SetupPlugin"
-
+Launch method: Launch agent by connecting it as the master
+copy file jar to remote host and run
 
 
 case 4: Linux (Master - slave)
