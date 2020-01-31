@@ -73,7 +73,12 @@ case 2: Linux & Window (Master - slave)
 case 3: Window (Master - slave)
 manage plugin --> Install plugins: "Slave SetupPlugin"
 Launch method: Launch agent by connecting it as the master
-copy file jar to remote host and run
+
+
+---> Qua Slave host: access browser and use method #1: "Launch agent from browser on slave"
+
+Source:
+https://support.cloudbees.com/hc/en-us/articles/217423827-How-to-Install-Several-Windows-Slaves-as-a-Service-
 
 
 case 4: Linux (Master - slave)
