@@ -80,11 +80,12 @@ case 4: Linux (Master - slave)
 
 ---------------------------Set UP Mail notification------------------------------
 +++++++++++++=Manage Jenkins --> Configure system
+Email Notification & Email-extended Notification
 
 SMTP server	: smtp.gmail.com
 User Name: xxxx@gmail.com
 Password: abcdef
-SMTP Port: 587 or 465
+SMTP Port: 465 (SSL)
 TLS/SSL: Required.
 
 +++++++++++++Configure a project to send email at every build
