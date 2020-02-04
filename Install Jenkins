@@ -13,11 +13,11 @@
 
 
 
-*******************(Set up Envinronment)*******************(
+*******************(Set up Envinronment)*******************
 Windows:
 1.	Windows 7: Right click My Computer and select Properties.
 Windows 8 and 10: Go to Control Panel > System > Advanced System Settings
-2.	On the Advanced tab, select Environment Variables, and then find a Systems Variable called Path and add to it the path 
+2.	Properties This PC,On the Advanced tab, select Environment Variables, and then find a Systems Variable called Path and add to it the path 
 for your \bin file, for example C:\Program Files\apache-maven-3.5.0\bin.
 3.	Check you have set the variable correctly by opening up command prompt (run + cmd) and typing mvn -version. 
 The output should show your Maven version.
