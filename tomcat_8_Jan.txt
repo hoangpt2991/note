@@ -78,5 +78,87 @@ training.war.failed
 
 
 
+===========================================
+===============SET UP TOMCAT===============
+===========================================
+Mo hinh:
+--- Server 1: Jenkins + Tomcat + Jboss
+---
+--- ket hop voi file noi dung dxc
+
+1.Tao user chua file: 
+
+useradd user_test
+passwd user_test
+
+
+2.Tao thu muc chua file va giai nen file Tomcat & Jboss (.zip)
+
++) /home/user_test/training/
+
+wget https://mli-misr.s3.ap-southeast-1.amazonaws.com/software/apache-tomcat-8.5.47.zip
+wget https://mli-misr.s3.ap-southeast-1.amazonaws.com/software/jboss-eap-6.4.zip
+
+
+3. Vao thu muc Tomcat vua giai nen
+
+
++) Xac dinh thu muc dich vu
+
+/home/tom_user/training/apache-tomcat-8.5.47/bin: chua cac file script khoi dong dich vu, xet quyen cho cac file.
+==> catalina.[sh/bat]-(linux/windows)
+
+/home/tom_user/training/apache-tomcat-8.5.47/conf: chua cac file cau hinh port dich vu( nhieu tomcat tren 1 server).
+==> server.xml: config port
+
+
+
+[tom_user@254-167 conf]$ cat server.xml | grep port
+<Server port="8015" shutdown="SHUTDOWN">
+         Define a non-SSL/TLS HTTP/1.1 Connector on port 8080
+    <Connector port="8090" protocol="HTTP/1.1"
+               port="8090" protocol="HTTP/1.1"
+    <!-- Define an SSL/TLS HTTP/1.1 Connector on port 8443
+    <Connector port="8453" protocol="org.apache.coyote.http11.Http11NioProtocol"
+    <!-- Define an SSL/TLS HTTP/1.1 Connector on port 8443 with HTTP/2
+    <Connector port="8453" protocol="org.apache.coyote.http11.Http11AprProtocol"
+    <!-- Define an AJP 1.3 Connector on port 8090 -->
+    <Connector port="8090" protocol="AJP/1.3" redirectPort="8443" />               //port dich vu 8090
+    <!-- You should set jvmRoute to support load-balancing via AJP ie :
+
+4. Tao file bash chua de goi cac script start/stop Tomcat va check bang netstat
+
+$ cat tom_start.sh & cat tom_stop.sh
+
+../training/apache-tomcat-8.5.47/bin/catalina.sh start
+
+../training/apache-tomcat-8.5.47/bin/catalina.sh stop
+
+
+
+5. Kiem tra dich vu
+
+[root@254-167 ~]# netstat -tnpl
+Active Internet connections (only servers)
+Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1464/sshd
+tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN      2461/master
+tcp6       0      0 127.0.0.1:8015          :::*                    LISTEN      3313/java
+tcp6       0      0 :::8080                 :::*                    LISTEN      2600/java
+tcp6       0      0 :::22                   :::*                    LISTEN      1464/sshd
+tcp6       0      0 ::1:25                  :::*                    LISTEN      2461/master
+tcp6       0      0 :::8090                 :::*                    LISTEN      3313/java
+
+6. Jenkins: Bat Jenkins & address repo Github --> build file .war
+
+#use jenkins to pull code from below github with github token
+https://github.com/dxcfresher/training.git
+branch: master
+
+7. Jenkins: 
+
++) Build section:
+++)  set mvn  --> Goals: clean install 
+++)  Execute shell:
 
 ========================Proxy==================================
