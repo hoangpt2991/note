@@ -7,6 +7,16 @@ tế được gọi là working tree.
 -Giữa repository và working tree tồn tại một nơi gọi là index. Index là nơi để chuẩn bị cho việc 
 commit lên repository
 
+
+
+echo "# new" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/hoangpt2991/new.git
+git push -u origin master
+
+
 0.Cach gan tai khoan git vao thu muc hien hanh (terminal)
 git config --global user.name "Your name here"
 git config --global user.email "your_email@example.com"
