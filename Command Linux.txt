@@ -1,0 +1,114 @@
+
+scp (linux) vs pscp.exe (windows)
+----------Information of CPU
+dmidecode -t processor | grep -i version
+----------Information of kernel
+uname -r
+----------OS distribution
+cat /etc/issue
+----------Information of Memory
+free -m
+----------Eth interface
+ifdown <name port>
+ifup <name port>
+----------verify that the Redis server is listening on your private interface on port 
+ss -an | grep <port number>
+----------Route
+ip route add {NETWORK/MASK} via {GATEWAYIP}
+ip route add {NETWORK/MASK} dev {DEVICE}
+ip route add default {NETWORK/MASK} dev {DEVICE}
+ip route add default {NETWORK/MASK} via {GATEWAYIP}
+ip r : view root
+---------- Set time
+timedatectl set-timezone America/Chicago
+timedatectl set-time 'YYYY-MM-DD HH:MM:SS'
+
+----------Hash passwd
+echo "HostAdvice" | sha256sum
+
+-------------install netstat
+yum install net-tools 
+-------------extract file
+
+netstat -tlnp | grep <port number> --> xem cac port dang listen
+netstat -ant | awk '{print $6}'| uniq -c  --> Dem cac connection
+
+-------------Gan card bridge vao centos
+dhclient
+
+-------------set hostname
+hostnamectl set-hostname your-new-hostname
+
+-------------check interface
+nmcli d :---list all device interface and status
+
+-------------grant privileges highest
+grant all privileges on *.* to 'user'@'IP host' identified by 'password' with grant option;
+
+------------Vi EDITOR
+:%s/foo/bar/g
+Find each occurrence of 'foo' (in all lines), and replace it with 'bar'.
+:s/foo/bar/g
+Find each occurrence of 'foo' (in the current line only), and replace it with 'bar'.
+:%s/foo/bar/gc
+Change each 'foo' to 'bar', but ask for confirmation first.
+-------------Check file config
+rpm -qc <filename or service>
+
+-------------Tim folder 
+find / -type d -name "www"  --> tim folder name "www"
+find / -type f -name "www"  --> tim file name "www"
+
+-------------Github
+git clone /Path//
+
+
+
+
+----------------Windows
+Ping scan
+C:\Users\Pham>for /l %i in (1,1,254) do @ping 192.168.1.%i -n 1 -w 100 | find "Reply"
+
+----------------Fix loi
+to install the C compiler: sudo apt-get install build-essential 
+
+
+
+
+----------------cHECK ddos
+sERVER WITH MULTI-IP, DEFINE WHICH ONE WAS ATTACKED
+netstat -plan | grep :80 | awk '{print $4}'| cut -d: -f1 |sort |uniq -c
+
+LIST IP AND CONNECTIONS 
+netstat -an|grep :80 |awk '{print $5}'|cut -d":" -f1|sort|uniq -c|sort -rn
+
+netstat -an | grep ':80' | awk '{print $5}' | sed s/'::ffff:'// | cut -d":" -f1 | sort | uniq -c
+
+LIST CONNECTION TYPE
+netstat -an | grep :80 | awk '{print $6}' | sort | uniq -c
+
+----------------Kiem tra dung luong o dia
+df -kh
+
+
+----------------Configuring and Compiling the Source
+
+./configure
+make
+make install
+
+
+----------------Fix “Unable to locate package” error in Kali Linux: vi /etc/apt/sources.list
+
+
+deb http://http.kali.org/kali kali-rolling main contrib non-free
+# For source package access, uncomment the following line
+# deb-src http://http.kali.org/kali kali-rolling main contrib non-free
+deb http://http.kali.org/kali sana main non-free contrib
+deb http://security.kali.org/kali-security sana/updates main contrib non-free
+# For source package access, uncomment the following line
+# deb-src http://http.kali.org/kali sana main non-free contrib
+# deb-src http://security.kali.org/kali-security sana/updates main contrib non-free
+deb http://old.kali.org/kali moto main non-free contrib
+# For source package access, uncomment the following line
+# deb-src http://old.kali.org/kali moto main non-free contrib
