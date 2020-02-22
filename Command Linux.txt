@@ -1,3 +1,5 @@
+-----------IP public
+dig +short myip.opendns.com @resolver1.opendns.com
 
 scp (linux) vs pscp.exe (windows)
 ----------Information of CPU
@@ -98,7 +100,7 @@ make
 make install
 
 
-----------------Fix ìUnable to locate packageî error in Kali Linux: vi /etc/apt/sources.list
+----------------Fix ‚ÄúUnable to locate package‚Äù error in Kali Linux: vi /etc/apt/sources.list
 
 
 deb http://http.kali.org/kali kali-rolling main contrib non-free
