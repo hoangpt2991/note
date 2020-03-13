@@ -60,7 +60,15 @@ Open up a terminal in the download directory.
 Run   java -jar jenkins.war --httpPort=8080 &  //& run underground
 Browse to http://localhost:8080.
 Follow the instructions to complete the installation.
-
+====================Run jenkins startup as OS 
+Use crontab to help with this problem:
+1. Get inside the crontab: crontab -e 
+<time>  <path of script with grant permission>
+@reboot   /tmp/file_important/run_jenkins.sh
+--notice: @reboot - whenever OS start up
+2. Edit file run_jenkins.sh above.
+java -jar /root/jenkins/jenkins.war --httpPort=8080 &
+--notice: & - run underground
 -----------------------set up master slave MODE---------------------------------------
 Set up Master&Slave:
 case 1: Window & Linux (Master - slave)
