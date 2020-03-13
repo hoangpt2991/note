@@ -29,15 +29,30 @@ M2: This is an environment variable that points towards Maven’s bin folder. Ex
 Part 2: Set up on jenkins browser
 Manage Jenkins -> Global Tool Configuration -> Maven: set up name and MAVEN_HOME:[PATH]
 
-Linux:
+Linux_Windows in README.txt:
 
-1.	Open the command terminal and enter the following
-$ export M2_HOME=/usr/local/apache-maven/apache-maven-3.3.9
-$ export M2=$M2_HOME/bin
-$ export MAVEN_OPTS=-Xms256m -Xmx512m
-2.	Now append the M2 variable to the system path.
-$ export PATH=$M2:$PATH
-3.	Check maven installed correctly, by running this command in a terminal: mvn -version. The output should show your Maven version.
+ Installing Maven
+  ----------------
+
+  1) Unpack the archive where you would like to store the binaries, e.g.:
+
+    Unix-based operating systems (Linux, Solaris and Mac OS X)
+      tar zxvf apache-maven-3.x.y.tar.gz
+    Windows
+      unzip apache-maven-3.x.y.zip
+
+  2) A directory called "apache-maven-3.x.y" will be created.
+
+  3) Add the bin directory to your PATH, e.g.:
+
+    Unix-based operating systems (Linux, Solaris and Mac OS X)
+      export PATH=/usr/local/apache-maven-3.x.y/bin:$PATH
+    Windows
+      set PATH="c:\program files\apache-maven-3.x.y\bin";%PATH%
+
+  4) Make sure JAVA_HOME is set to the location of your JDK
+
+  5) Run "mvn --version" to verify that it is correctly installed.
 
 
 
