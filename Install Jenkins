@@ -54,7 +54,12 @@ Linux_Windows in README.txt:
 
   5) Run "mvn --version" to verify that it is correctly installed.
 
-
+--Install jenkins via jenkins.war:
+Download Jenkins(website)
+Open up a terminal in the download directory.
+Run   java -jar jenkins.war --httpPort=8080 &  //& run underground
+Browse to http://localhost:8080.
+Follow the instructions to complete the installation.
 
 -----------------------set up master slave MODE---------------------------------------
 Set up Master&Slave:
