@@ -64,9 +64,13 @@ find / -type f -name "www"  --> tim file name "www"
 -------------Github
 git clone /Path//
 
-
-
-
+-------------Add PATH
+nano ~/.bash_profile
+-->edit file:
+---> PATH=$PATH:$HOME/bin:/your/path
+---> export PATH
+source ~/.bash_profile
+echo $PATH
 ----------------Windows
 Ping scan
 C:\Users\Pham>for /l %i in (1,1,254) do @ping 192.168.1.%i -n 1 -w 100 | find "Reply"
