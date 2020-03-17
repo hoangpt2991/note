@@ -122,6 +122,18 @@ crontab -r
 ./configure
 make
 make install
+-----------------Attach repo
+*EXAMPLE OF NGINX
+Official Red Hat/CentOS packages
+To add NGINX yum repository, create a file named /etc/yum.repos.d/nginx.repo and paste one of the configurations below:
+CentOS:
+
+[nginx]
+name=nginx repo
+baseurl=https://nginx.org/packages/centos/$releasever/$basearch/
+gpgcheck=0
+enabled=1
+
 
 
 ----------------Fix “Unable to locate package” error in Kali Linux: vi /etc/apt/sources.list
