@@ -102,6 +102,20 @@ netstat -an | grep :80 | awk '{print $6}' | sort | uniq -c
 ----------------Kiem tra dung luong o dia
 df -kh
 
+----------------Open port Firewalld 
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+firewall-cmd --reload
+
+
+
+----------------Crontab
+crontab -l
+crontab -e
+crontab -r
+
+<time> <path of script file>
+@reboot         /etc/init.d/file.sh
+* * * * *
 
 ----------------Configuring and Compiling the Source
 
