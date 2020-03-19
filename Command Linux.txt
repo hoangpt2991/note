@@ -135,7 +135,20 @@ gpgcheck=0
 enabled=1
 
 
+=================Send message to all user logon from root
 
+wall -n "message here"
+
+=================Foremost tool to recovery deleted file
+install: 
+# yum install https://forensics.cert.org/centos/cert/7/x86_64//foremost-1.5.7-13.1.el7.x86_64.rpm -y
+syntax: 
+#formost -h
+
+define which sda? keep the find:
+#df -h
+run command to restore
+#foremost -i /dev/sda? -t XXX -o /path/to/folder/
 ----------------Fix “Unable to locate package” error in Kali Linux: vi /etc/apt/sources.list
 
 
