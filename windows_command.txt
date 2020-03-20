@@ -1,0 +1,6 @@
+taskkill /F /IM <name of process>
+EX: taskkill /F /IM java.exe
+
+taskkill /F /PID <ID of process>
+EX: netstat -a --> find PID
+taskkill /F /PID 1923
