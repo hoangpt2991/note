@@ -1,6 +1,21 @@
-taskkill /F /IM <name of process>
+# Find process to kill or end task via name
+-->taskkill /F /IM <name of process>
 EX: taskkill /F /IM java.exe
+-->Kill with wildcard: java1.exe, java2.exe.....
+EX2: taskkill /F /IM java%*.exe
 
-taskkill /F /PID <ID of process>
+# Find process to kill or end task via PIF
+-->taskkill /F /PID <ID of process>
+EX: taskkill /F /PID 1923
+
 EX: netstat -a --> find PID
-taskkill /F /PID 1923
+
+Wildcard argument in batch script:   %*
+EX: findstr 
+
+To search for hello or there in file x.y, type
+EX: findstr hello there x.y
+
+
+# To restart the computer, type the following line in the location text field.
+shutdown.exe /r /t 00
