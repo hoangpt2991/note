@@ -11,3 +11,8 @@
 
 
 974f8c461f2fa3c337f57997717451bb2a80c192
+
+
+Github issue:
+#Issue1: stderr: fatal: unable to access 'https://github.com/hoangpt2991/test.git/': Peer's Certificate has expired.
+git config --global http.sslVerify false
