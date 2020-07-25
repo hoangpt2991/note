@@ -1,0 +1,4 @@
+####For multiple shell commands, I ignores the failures by adding:
+set +e
+commands
+true
