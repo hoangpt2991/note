@@ -6,7 +6,7 @@ import sys
 choose_account = 'hoangpt2991'
 #choose_sprint = 'sprint1'
 # or using an access token
-g = Github("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")
+g = Github("")
 
 list_repositories = [
   "test2"
