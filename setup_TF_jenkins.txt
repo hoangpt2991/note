@@ -1,0 +1,42 @@
+Install TF
+wget https://releases.hashicorp.com/terraform/0.11.8/terraform_0.11.8_linux_amd64.zip
+unzip terraform_0.11.8_linux_amd64.zip -d <PAth to place the file>
+export PATH="<PAth to place the file>:$PATH"
+
+
+-Install python 2x and 3x
+
+
+
+ls -l /usr/bin/python*
+sudo ln -s /usr/bin/python3.4 /usr/bin/python
+export PATH=$PATH:/usr/local/bin
+
+-Install pip 
+sudo yum install epel-release
+yum install python-pip
+pip --version
+sudo yum install python-devel
+-Install lib python boto3
+python -m pip install --user boto3
+
+-Install aws
+curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip"
+unzip awscli-bundle.zip
+sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+aws --version
+
+export PATH=$PATH:/usr/local/bin
+
+-create folder keep aws credential
+Option1: add via aws cli command line
+
+
+Option2: create file .ssh/config
+
+host github.dxc.com
+ HostName github.dxc.com
+ IdentityFile /root/.ssh/id_rsa
+ User bpham26
+
+

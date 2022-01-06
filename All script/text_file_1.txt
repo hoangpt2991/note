@@ -1,0 +1,13 @@
+#!/bin/sh
+for user in $( cat list1.txt )
+do
+echo "$user"
+useradd $user
+echo "$user@123" | passwd --stdin "$user"
+
+done
+
+
+
+
+# grep "user1\|user2\|user3" /etc/passwd

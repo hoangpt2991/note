@@ -1,0 +1,1 @@
+find ./ -name *.product  -print0 | xargs -0 sed -i  's/\\/\//g'

@@ -1,0 +1,54 @@
+================CREATE VPN POINT-TO-SITE:use cert to authorize
+
+
+1. CLIENT
+
+-set up server.cer
++++++Create a self-signed root certificate+++++
++++Powershell win10
+
+-----------------------------------------
+$cert = New-SelfSignedCertificate -Type Custom -KeySpec Signature `
+-Subject "CN=P2SRootCert" -KeyExportPolicy Exportable `
+-HashAlgorithm sha256 -KeyLength 2048 `
+-CertStoreLocation "Cert:\CurrentUser\My" -KeyUsageProperty Sign -KeyUsage CertSign
+------------------------------------------
+
+
+-set up client.cer
++++++Generate a client certificate+++++
++++Powershell win10
+
+------------------------------------------
+New-SelfSignedCertificate -Type Custom -DnsName P2SChildCert -KeySpec Signature `
+-Subject "CN=P2SChildCert" -KeyExportPolicy Exportable `
+-HashAlgorithm sha256 -KeyLength 2048 `
+-CertStoreLocation "Cert:\CurrentUser\My" `
+-Signer $cert -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.2")
+------------------------------------------
+
++++check:
+
+Get-ChildItem -Path "Cert:\CurrentUser\My"
+
+-Export certificates
+Run -> Manage user certificates -> Personal -> Certificates.
+server.cer -> all tasks -> export -> "No, do not export the private key" -> finish.
+client.cer -> all tasks -> export -> "Yes, export the private  key" -> Personal Inforamtion Exchange..." -> Unstick all -> set password -> finish.
+
+-install client.cer after export file above.
+2. AZURE
+
+-create Virtual Network "VNET" - 10.0.0.0/16
+-create subnet: 
+Sub1 - 10.0.10.0/24
+Sub2 - 10.0.20.0/24
+
+-set up VM and assign to subnet.
+
+-create virtual network gateway. Assign Public IP address to Virtual network gateway
+
+*****Point-to-site configuration
+*add name and content of server.cer
+
+-Use this tool "Download vpn client" on current page of Virtual Gateway.
