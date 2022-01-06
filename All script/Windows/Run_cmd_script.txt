@@ -1,0 +1,4 @@
+cd C:\ITS
+start cmd /c java -Xms2g -Xmx15G -jar its.jar -p 80 -a its:789 
+cd C:\ITS\selenium
+start cmd /c java -jar selenium-server-standalone-2.53.1.jar
