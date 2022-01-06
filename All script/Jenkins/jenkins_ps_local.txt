@@ -1,0 +1,277 @@
+// Jenkins job use to Set up PS  08 march 2021
+
+void checking_component() {
+    sh '''
+	java -version && true
+	if [ "$?" != 0 ]; then
+	{
+	echo "We did not install Java"
+	echo "Start to install Java"
+	yum install java-1.8.0-openjdk.x86_64 -y
+	}
+	else echo "We got Java already, skip install stage"
+	fi
+
+	ant -version  && true
+	if [ "$?" != 0 ]; then
+	{
+	echo "We did not install Ant, start to install Ant"
+	yum -y install ant
+   	}
+	else echo "We got Ant already, skip install stage"
+	fi
+	
+	
+	unzip -v && true
+	if [ "$?" != 0 ]; then
+	{
+	echo "We did not install unzip"
+	echo "Start to install unzip"
+	yum install unzip -y
+	}
+	else echo "We got unzip already, skip install stage"
+	fi
+
+	yum install java-devel -y
+'''
+}
+
+pipeline {
+
+    agent any
+	
+    environment {
+		  
+		  //psVersion = "4.2.0"
+		  //psFile = "PS42"
+		  //psJbossfile = "EAP-7.1.0.7z"
+		  //mongoDBGatewayHost = "mongoDBGatewayHost=192.168.1.201"
+		  //mongoDBGatewayPort = "mongoDBGatewayPort=27017"
+		  //mongoDBConnectURI = "mongoDBConnectURI=http://localhost_mongo_URL"
+		  //workingJbossdir = "/tmp/jboss"
+		  //psXmlGatewayHost = "xmlGatewayHost=http://${psIp}:15000"
+		  //psJbossversion = "EAP-7.1.0"
+            psUrl = "http://integral-share-701990001.ap-southeast-1.elb.amazonaws.com/nexus/content/repositories/integral/resource/ps/4.2/ps-4.2.zip"
+            psJbossurl = "http://integral-share-701990001.ap-southeast-1.elb.amazonaws.com/nexus/content/repositories/integral/resource/eap/7.1.0/eap-7.1.0.zip"
+          //psIp = "192.168.1.201"
+          projectID = "aig"
+          projectEnv = "dev"
+		  Context_Path = "/tmp/user_temporary_folder"
+		  pathJbossfolder = "${workingJbossdir}/${psJbossversion}"
+		  //constants = load "common/common-env.groovy"
+		  
+        psJbossfile = "eap-7.1.0.zip"
+        psJbossversion = "EAP-7.1.0"
+        psVersion = "4.2.0"
+        psFile = "ps-4.2.zip"
+        
+		  psXmlGatewayHost = "xmlGatewayHost=http://${psIp}:${psPort}"
+	
+		  //psUrl = "${constants.psUrl}"
+		  //psJbossurl = "${constants.psJbossurl}"
+		  mongoDBGatewayHost = "mongoDBGatewayHost=localhost"
+		  mongoDBGatewayPort = "mongoDBGatewayPort=27017"
+		  mongoDBConnectURI  = "mongoDBConnectURI=mongodb://localhost:27017"
+		  psIp = "localhost"
+		  psPort = "15000"
+		  confUrl = "https://github.dxc.com/bpham26/vni-standard-config.git"
+		  credentialID = "bpham26"
+		  homePath ="C:"
+	      workingJbossdir = "/${homePath}/${projectID}/pas/${projectEnv}/ps"
+		  workingPsdir = "/${homePath}/${projectID}/pas/${projectEnv}/ps"
+	    workingDir_w = "${homePath}/${projectID}/pas/${projectEnv}/ps"
+	    workingDir_m = "${homePath}/${projectID}/pas/"
+	    workingDir_no_ps = "${projectID}/pas/${projectEnv}"
+	    url_create_service="http://nssm.cc/release/nssm-2.24.zip"
+		change1="deliveryAllBaseContent=true"
+	installDir="installDir=${homePath}/${projectID}/pas/${projectEnv}/ps/"
+    }
+	
+    stages {
+		stage('adding agentLabel') {
+			steps {
+				script {
+				echo "123"
+			}
+			}
+		}
+        stage('Setup Initial Requirement & Get resource') {
+			//agent { label agentId }
+            steps {
+                echo "Executing the checking mandatory component"
+		        script {
+				// Get repo config https://github.dxc.com/insurance/vni-standard-config.git
+				//checkout([$class: 'GitSCM', branches: [[name: '*/standard-pas']], doGenerateSubmoduleConfigurations: false, 
+				//extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'config_repo']], submoduleCfg: [], 
+				//userRemoteConfigs: [[credentialsId: "${credentialID}", url: "${confUrl}"]]])
+                    echo  "none" 
+		        }
+            }
+        } //end of stage Setup Initial Requirement
+		
+		//INSTALLATION jar command support installProductStage.sh
+		stage('Install webservice') {
+			//agent { label agentId }
+            steps {
+               script {
+			   if(isUnix()) {
+                   sh '''		 checking_component()
+				   export 
+				   echo "workingPsdir"
+				   mkdir -p ${workingPsdir} && cd ${workingPsdir}
+				   
+				   echo "Create folder in workspace and collect file PS,Jboss in Context_Path"
+				   mkdir -p ${WORKSPACE}/save_file
+
+				   echo "Extract the ${psFile}"
+				   rm -rf ${Context_Path}/*
+				   mkdir -p  ${Context_Path} && cd ${Context_Path}
+				   wget -q ${psJbossurl}
+				   wget -q ${psUrl} && cp ${psFile} ${WORKSPACE}/save_file 
+		           cd  ${WORKSPACE}/save_file 
+				   unzip -o ${psFile}
+				   cp -rf  ProductStage_${psVersion}.zip ${workingPsdir}/.
+				   chmod +x *.sh && ./installProductStage.sh -v ${psVersion} -p ${workingPsdir} -z
+				   
+				   echo "Change address and port of service"
+				   cd ${workingPsdir}
+				   sed -i "/xmlGatewayHost=/c\${psXmlGatewayHost}" csc/productStage/v${psVersion}/templates/product-stage-ear-${psVersion}/deploy.properties
+				   sed -i "/mongoDBGatewayHost=/c\${mongoDBGatewayHost}" csc/productStage/v${psVersion}/templates/product-stage-ear-${psVersion}/deploy.properties
+				   sed -i "/mongoDBGatewayPort=/c\${mongoDBGatewayPort}" csc/productStage/v${psVersion}/templates/product-stage-ear-${psVersion}/deploy.properties
+				   sed -i "/mongoDBConnectURI=/c\${mongoDBConnectURI}" csc/productStage/v${psVersion}/templates/product-stage-ear-${psVersion}/deploy.properties
+
+
+				   chmod +x ${workingPsdir}/csc/productStage/v${psVersion}/tools/deployProductStage.sh
+				   ${workingPsdir}/csc/productStage/v${psVersion}/tools/deployProductStage.sh -a /usr/share/ant/ -v ${psVersion} -l ${workingPsdir}/
+				
+				   echo "unzip jboss zip file"
+				   mkdir -p ${workingJbossdir} && cd ${workingJbossdir} && cp -rf ${Context_Path}/${psJbossfile} .
+				   unzip -o ${Context_Path}/${psJbossfile}
+				   cp -rf ${workingPsdir}/product-stage-ear-${psVersion}-default.ear ${workingJbossdir}/${psJbossversion}/standalone/deployments/
+    			   chmod +x -R ${workingJbossdir}/${psJbossversion}
+				   sed -i "s/jboss.http.port:8080/jboss.http.port:${psPort}/g" ${workingJbossdir}/${psJbossversion}/standalone/configuration/standalone.xml
+
+                '''
+				}
+				else {
+					powershell"""
+				    cd ${WORKSPACE} 
+				     ${workingDir_w}/nssm-2.24/win64/nssm.exe stop ${psJbossversion}
+				    sc.exe delete ${psJbossversion}
+				    
+				    Remove-Item "${WORKSPACE}/*" -Recurse -Force
+					Remove-Item "${workingDir_m}/*" -Recurse -Force
+					New-Item  -ItemType directory -Path "${workingDir_w}" -Force
+					New-Item  -ItemType directory -Path "${WORKSPACE}/save_file_download" -Force
+					(New-Object System.Net.WebClient).DownloadFile("${url_create_service}", "${WORKSPACE}/nssm-2.24.zip")
+					Expand-Archive -Path "${WORKSPACE}/nssm-2.24.zip" -DestinationPath "${workingDir_w}/" -Force
+					
+					echo "Download new files"
+					(New-Object System.Net.WebClient).DownloadFile("${psJbossurl}", "${WORKSPACE}/save_file_download/${psJbossfile}") 
+					(New-Object System.Net.WebClient).DownloadFile("${psUrl}", "${WORKSPACE}/save_file_download/${psFile}")
+					
+					
+					
+					
+					echo "-------------------Working with PS side--------------------"
+					New-Item -ItemType directory -Path "${WORKSPACE}/save_file" -Force
+			        
+					Copy-Item -Path "${WORKSPACE}/save_file_download/${psFile}" -Destination "${WORKSPACE}/save_file/${psFile}" -Recurse -Force
+		            echo "Extract the ${psFile}"
+					Expand-Archive -Path "${WORKSPACE}/save_file/${psFile}" -DestinationPath "${WORKSPACE}/save_file/" -Force
+					Copy-Item -Path "${WORKSPACE}/save_file/ProductStage_${psVersion}.zip" -Destination "${workingDir_w}/" -Recurse -Force
+                    cd ${workingDir_w}
+                    ls
+                    
+					Copy-Item -Path "${WORKSPACE}/save_file/ps-${psVersion}/ProductStage_${psVersion}.zip" -Destination "${workingDir_w}/" -Recurse -Force
+					Expand-Archive -Path "${workingDir_w}/ProductStage_${psVersion}.zip" -DestinationPath ".\" -Force
+					Start-Process ${WORKSPACE}/save_file/ps-${psVersion}/installProductStage.bat -ArgumentList ${psVersion},${workingDir_w}
+                    echo "Change address and port of service"
+                    
+                    echo "------------------Change address and port of service------------------"
+					echo "(Get-Content <file_input> -RAW) -replace '<string>','<replace_string>' | Set-Content -Path <Path of file output>"
+					
+					Set-Location ${workingDir_w}
+					Copy-Item -Path "C:/backup/workwithdeploy.ps1" -Destination "csc/productStage/v${psVersion}/templates/product-stage-ear-${psVersion}/." -Recurse -Force
+					cd ${workingDir_w}/csc/productStage/v${psVersion}/templates/product-stage-ear-${psVersion}/
+					powershell.exe -File workwithdeploy.ps1 "${installDir}"
+					Set-Location ${workingDir_w}
+					(Get-Content csc/productStage/v${psVersion}/templates/product-stage-ear-${psVersion}/deploy.properties -RAW) -replace 'xmlGatewayHost=.*','${psXmlGatewayHost}' | Set-Content -Path csc/productStage/v${psVersion}/templates/product-stage-ear-${psVersion}/deploy.properties
+					(Get-Content csc/productStage/v${psVersion}/templates/product-stage-ear-${psVersion}/deploy.properties -RAW) -replace 'mongoDBGatewayHost=.*','${mongoDBGatewayHost}' | Set-Content -Path csc/productStage/v${psVersion}/templates/product-stage-ear-${psVersion}/deploy.properties
+					(Get-Content csc/productStage/v${psVersion}/templates/product-stage-ear-${psVersion}/deploy.properties -RAW) -replace 'mongoDBGatewayPort=.*','${mongoDBGatewayPort}' | Set-Content -Path csc/productStage/v${psVersion}/templates/product-stage-ear-${psVersion}/deploy.properties
+					(Get-Content csc/productStage/v${psVersion}/templates/product-stage-ear-${psVersion}/deploy.properties -RAW) -replace 'deliveryAllBaseContent=.*','${change1}' | Set-Content -Path csc/productStage/v${psVersion}/templates/product-stage-ear-${psVersion}/deploy.properties
+					(Get-Content csc/productStage/v${psVersion}/templates/product-stage-ear-${psVersion}/deploy.properties -RAW) -replace 'mongoDBConnectURI=.*','${mongoDBConnectURI}' | Set-Content -Path csc/productStage/v${psVersion}/templates/product-stage-ear-${psVersion}/deploy.properties
+					echo "------------------End of changing address and port of service------------------"
+					
+					echo "-------------Working with Jboss side------------"
+					Test-Path -Path ${workingDir_w}/csc/productStage/v${psVersion}/tools/createProductStageEAR.bat -PathType Any
+					(Get-ACL -Path "${workingDir_w}/csc/productStage/v${psVersion}/tools/createProductStageEAR.bat").Access | Format-Table IdentityReference,FileSystemRights,AccessControlType,IsInherited,InheritanceFlags -AutoSize
+					
+					echo "Create EAR file"
+					${workingDir_w}/csc/productStage/v${psVersion}/tools/createProductStageEAR.bat "${psVersion}"
+					Start-Sleep -Seconds 15
+					
+					echo "-------------Unzip jboss zip file-------------"
+					Copy-Item -Path "${WORKSPACE}/save_file_download/${psJbossfile}" -Destination "${workingDir_w}" -Recurse -Force
+					Expand-Archive "${workingDir_w}/${psJbossfile}" -DestinationPath "${workingDir_w}" -Force
+					Copy-Item -Path "C:/backup/convert.ps1" -Destination "${workingDir_w}/${psJbossversion}/bin/." -Recurse -Force 
+			        
+					Copy-Item -Path "${workingDir_w}/csc/productStage/v${psVersion}/deploy/product-stage-ear-${psVersion}-default.ear" -Destination "${workingDir_w}/${psJbossversion}/standalone/deployments/product-stage-ear-${psVersion}-default.ear" -Force
+					Test-Path -Path ${workingDir_w}/${psJbossversion}/standalone/configuration/standalone.xm -PathType Any
+					(Get-Content ${workingDir_w}/${psJbossversion}/standalone/configuration/standalone.xml -RAW) -replace 'jboss.http.port:8080',"jboss.http.port:${psPort}" | Set-Content -Path ${workingDir_w}/${psJbossversion}/standalone/configuration/standalone.xml
+					(Get-Content ${workingDir_w}/${psJbossversion}/bin/service.bat -RAW) -replace 'app','ps' | Set-Content -Path  ${workingDir_w}/${psJbossversion}/bin/service.bat
+					(Get-Content ${workingDir_w}/${psJbossversion}/bin/service.bat -RAW) -replace 'integral',"${workingDir_no_ps}" | Set-Content -Path  ${workingDir_w}/${psJbossversion}/bin/service.bat
+					(Get-Content ${workingDir_w}/${psJbossversion}/bin/standalone.conf.bat -RAW) -replace 'app','ps' | Set-Content -Path  ${workingDir_w}/${psJbossversion}/bin/standalone.conf.bat
+					(Get-Content ${workingDir_w}/${psJbossversion}/bin/standalone.conf.bat -RAW) -replace 'integral',"${workingDir_no_ps}" | Set-Content -Path  ${workingDir_w}/${psJbossversion}/bin/standalone.conf.bat
+					echo "EXECUTING FILE PS1"
+					cd ${workingDir_w}/${psJbossversion}/bin/
+					powershell.exe -File "${workingDir_w}/${psJbossversion}/bin/convert.ps1"
+					 
+					
+					 
+					 
+					"""
+				} //end of else condition
+               }
+            }
+        }
+
+
+		stage('Setup service stage') {
+			//agent { label agentId }
+            steps {
+  					script {
+					if(isUnix()) {
+					sh """
+                        echo "--------------------Setup PS service--------------------"                                                        
+                                                     
+                        rm -rf /etc/systemd/system/ps.service  || true
+
+
+                        cp -rf ${WORKSPACE}/config_repo/common/ps/linux-config/ps.service /etc/systemd/system/
+                        cd /etc/systemd/system/ && chmod 755 ps.service
+						sed -i "s|jbossFolder|${pathJbossfolder}|g" ps.service
+                        systemctl daemon-reload      
+                        systemctl restart ps.service                             
+						systemctl enable ps.service   
+                           
+                    """
+				}
+				else {
+						powershell"""
+						echo "--------------------Setup Product Stage--------------------"
+						
+"                       
+					"""
+				}
+            }}
+			//post {
+				//always {
+				//cleanWs()
+					//}
+				//}
+        } //end of stage Setup service
+                
+
+	} // end of stages section
+} //end of pipeline section

@@ -1,0 +1,37 @@
+		stage('Stage 1 Build Binaries') { 
+			steps {
+				script {
+				  dir ("${new_workspace}") {
+  				  def VERSION = VersionNumber projectStartDate: '', versionNumberString: '${BUILD_DATE_FORMATTED, "yyyy.MM.dd"}.${BUILDS_ALL_TIME}', versionPrefix: ''
+				  echo "${VERSION}"
+				  env.DPLVERSION="${VERSION}"
+				  currentBuild.displayName = DPLVERSION
+					// checkout API code and set the supper job build when code changes from team branch
+					checkout([$class: 'GitSCM', branches: [[name: "${}"]], browser: [$class: 'GithubWeb', repoUrl: "${gitSVU}/tree/${}"],
+					doGenerateSubmoduleConfigurations: false,extensions: [[$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [[path: "integralapi/Docker-Script"]]]],
+					extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: "${repoSVU}"]],, submoduleCfg: [],
+					userRemoteConfigs: [[credentialsId: '', url: "${}"]]])
+					
+				  echo "Collect ticket changes for this build"
+						def changes = ""
+						build = currentBuild
+						// Go through the previous builds and get changes until the last successful build is found.
+						while (build != null && build.result != 'SUCCESS') {
+							//changes += "Build $build.displayName:\n"
+						
+							for (changeLog in build.changeSets) {
+								for (entry in changeLog.items) {
+									changes += "${entry.author} ${entry.msg}"
+									changes += "\n"
+								}
+							}
+							build = build.previousBuild
+						}
+						echo changes
+						writeFile file: "changeLog.txt", text: changes
+					
+					
+				  }
+				}
+			}
+		}

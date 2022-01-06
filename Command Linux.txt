@@ -1,11 +1,30 @@
+-----------Set user as root
+#visudo
+Find the following code:
+# User privilege specification
+#root ALL=(ALL:ALL) ALL
+In this case, weíre granting root privileges to the user mynewuser. Add the following below that code:
+#mynewuser ALL=(ALL:ALL) ALL
+
 -----------IP public
 dig +short myip.opendns.com @resolver1.opendns.com
-
+curl http://checkip.amazonaws.com
+dig TXT +short o-o.myaddr.l.google.com @ns1.google.com
 scp (linux) vs pscp.exe (windows)
 ----------Information of CPU
 dmidecode -t processor | grep -i version
 ----------Information of kernel
-uname -r
+uname -r or uname -a
+
+=================filter file need to copy after grep
+
+ ls | grep '2018-08-22' | xargs -I '{}' cp '{}' /path/destination/copy
+
+=================Send message to all user logon from root
+
+wall -n "message here"
+
+
 ----------OS distribution
 cat /etc/issue
 ----------Information of Memory
@@ -21,19 +40,34 @@ ip route add {NETWORK/MASK} dev {DEVICE}
 ip route add default {NETWORK/MASK} dev {DEVICE}
 ip route add default {NETWORK/MASK} via {GATEWAYIP}
 ip r : view root
+----------Get current folder name
+echo "${PWD##*/}"
+
+
 ---------- Set time
 timedatectl set-timezone America/Chicago
 timedatectl set-time 'YYYY-MM-DD HH:MM:SS'
+
+Adjust the date time:
+
+date +'%d_%m_%Y'
 
 ----------Hash passwd
 echo "HostAdvice" | sha256sum
 
 -------------install netstat
 yum install net-tools 
+
+-------------Zip file command: zip [options] zipfile files_list
+zip ñr mydir.zip docs
++ docs: is a folder
 -------------extract file
 
 netstat -tlnp | grep <port number> --> xem cac port dang listen
 netstat -ant | awk '{print $6}'| uniq -c  --> Dem cac connection
+
+#extract war file
+jar -xvf yourWARfileName.war
 
 -------------Gan card bridge vao centos
 dhclient
@@ -50,16 +84,10 @@ grant all privileges on *.* to 'user'@'IP host' identified by 'password' with gr
 ------------Vi EDITOR
 :%s/foo/bar/g
 Find each occurrence of 'foo' (in all lines), and replace it with 'bar'.
-
 :s/foo/bar/g
 Find each occurrence of 'foo' (in the current line only), and replace it with 'bar'.
-
 :%s/foo/bar/gc
 Change each 'foo' to 'bar', but ask for confirmation first.
-
-use /<key_word> or ?<key_word>  -> press "n" to move position
-
-
 -------------Check file config
 rpm -qc <filename or service>
 
@@ -70,21 +98,86 @@ find / -type f -name "www"  --> tim file name "www"
 -------------Github
 git clone /Path//
 
--------------Add PATH
-nano ~/.bash_profile
--->edit file:
----> PATH=$PATH:$HOME/bin:/your/path
----> export PATH
-source ~/.bash_profile
-echo $PATH
-----------------Windows
-Ping scan
-C:\Users\Pham>for /l %i in (1,1,254) do @ping 192.168.1.%i -n 1 -w 100 | find "Reply"
 
-----------------Fix loi
-to install the C compiler: sudo apt-get install build-essential 
+git clone https://<token>@github.com/owner/repo.git -b <name of branch>
+
+----------------Configuring and Compiling the Source
+
+./configure
+make
+make install
+
+----------------Kiem tra dung luong o dia
+df -kh
+----------------dung luong file
+
+du -ah . #all file
+du -h <file name>
+-----------------grep 
+# grep "user1\|user2\|user3" /etc/passwd
+
+-----------------Path file 
+readlink -f $(which java)
+
+----------------------------------------------------------------
+----------------symbolic link
+UNIX create a symbolic link command
+$ ln -s {/path/to/file-name} {link-name}
+EX ln -s /home/user/bin/julia-1.5.3/bin/julia /usr/local/bin/julia
+$ ln -s /shared/sales/data/file.txt sales.data.txt
+$ vi sales.data.txt
+$ ls -l sales.data.txt
 
 
+
+UNIX create a hardlink command
+$ ln {file.txt} {hard-link}
+$ ln /tmp/file link-here
+
+
+Change directory permissions in directories and files that are objects of symbolic links.
+Choose one of the following options used with the recursive ñR option of the chmod command.
+
+ñP ñ Changes the mode of a directory or file unless it is the object of a symbolic link, which prevents the traversal of any symbolic links.
+
+$ chmod -R -P mode directory | file
+This option is the most secure setting. To see what has changed or not changed and why, add the verbose ñv option.
+
+ñH ñ Changes the mode of a directory or file that is the object of a symbolic link and the files in the file hierarchy below the directory.
+
+$ chmod -R -H mode directory | file
+If a symbolic link is found when traversing a file hierarchy, the mode of the target directory is changed but no recursion takes place. To see what has changed or not changed and why, add the verbose ñv option.
+
+ñL ñ Changes the mode of objects of symbolic links and files by traversing all symbolic links recursively. This option is the default option and is the most permissive.
+
+$ chmod -R -L mode directory | file
+----------------
+
+tar cvzf <name of archive file>.tar <File or folder is archived>
+
+----------------Open port Firewalld 
+firewall-cmd --zone=public --add-port=80/tcp --permanent
+firewall-cmd --reload
+
+firewall-cmd --state
+firewall-cmd --list-all
+firewall-cmd --list-services
+----------------Check hardware info of system
+sudo lshw -short
+sudo lshw -html > lshw.html
+
+
+lscpu
+lsblk  #Linux Block Device Information
+lsblk -a
+
+
+lsusb
+
+Information about SATA Devices
+sudo hdparm /dev/sda1
+
+----------------Fix ‚ÄúUnable to locate package‚Äù error in Kali Linux: vi /etc/apt/sources.list
 
 
 ----------------cHECK ddos
@@ -99,58 +192,166 @@ netstat -an | grep ':80' | awk '{print $5}' | sed s/'::ffff:'// | cut -d":" -f1 
 LIST CONNECTION TYPE
 netstat -an | grep :80 | awk '{print $6}' | sort | uniq -c
 
-----------------Kiem tra dung luong o dia
-df -kh
+--------------------SED
+Remove all character  behind "=":
+sed -i -e "s/=.*//g" test1.txt
 
-----------------Open port Firewalld 
-firewall-cmd --zone=public --add-port=80/tcp --permanent
-firewall-cmd --reload
+sed -e -i "s/Result_test_2=.*/Result_test_2=FAIL/g" general_resutl.txt
+sed -i -e "s/Result_test_2=.*/Result_test_2=FAIL/g" general_resutl.txt
 
-
-
-----------------Crontab
-crontab -l
-crontab -e
-crontab -r
-
-<time> <path of script file>
-@reboot         /etc/init.d/file.sh
-* * * * *
-
-----------------Configuring and Compiling the Source
-
-./configure
-make
-make install
------------------Attach repo
-*EXAMPLE OF NGINX
-Official Red Hat/CentOS packages
-To add NGINX yum repository, create a file named /etc/yum.repos.d/nginx.repo and paste one of the configurations below:
-CentOS:
-
-[nginx]
-name=nginx repo
-baseurl=https://nginx.org/packages/centos/$releasever/$basearch/
-gpgcheck=0
-enabled=1
+echo "C:\\IBM\\WebSphere" | sed -e 's_\\_/_g' -e 's_[Cc]:_/opt_g'  --> output   C:\\IBM\\WebSphere -> /opt/IBM/WebSphere
 
 
-=================Send message to all user logon from root
+#Replace character with / or \ 
 
-wall -n "message here"
+home_mf=$(printf "%s" "$home" | sed 's/\//\\/g')    # forward to backward slash
+home_mf=$(printf "%s" "$home_mf" | sed 's/\\/\//g') # backward to forward slash
 
-=================Foremost tool to recovery deleted file
-install: 
-# yum install https://forensics.cert.org/centos/cert/7/x86_64//foremost-1.5.7-13.1.el7.x86_64.rpm -y
-syntax: 
-#formost -h
+#replace \ to / with file name *.product
+find ./ -name *.product  -print0 | xargs -0 sed -i  's/\\/\//g'
 
-define which sda? keep the find:
-#df -h
-run command to restore
-#foremost -i /dev/sda? -t XXX -o /path/to/folder/
-----------------Fix ‚ÄúUnable to locate package‚Äù error in Kali Linux: vi /etc/apt/sources.list
+test=$(cat $1| grep "PASS"| wc -w)
 
+if [ $test == "2"  ]; then
+        echo "======>This is PASS"
+else
+        echo "======>THis is FAIL"
+
+fi
+
+#sed with $ value
+sed -i "s|$KEY|$VALUE|g" $target_file
+
+-----------------------COPY
+#bypass confirmation before overwrite
+COMMAND: yes | cp -r bin test
+
+EX:
+[root@192-168-1-200 linux_script]# cp -i script.sh replace_key_value.sh
+cp: overwrite ëreplace_key_value.shí? ^C
+[root@192-168-1-200 linux_script]# yes | cp -r script.sh replace_key_value.sh
+cp: overwrite ëreplace_key_value.shí? [root@192-168-1-200 linux_script]#
+
+
+-----------------------Kill: specific pid via name of service
+
+
+  ps aux | grep <name of service:jenkins,httpd> | awk {'print $2'} | xargs kill -9
+  ps aux | grep $service | awk {'print $2'} | xargs kill -9
+-----------------------CRONTAB
+
+sudo crontab -l : list crontab 
+
+sudo crontab -e : edit crontab list
+
+Syntax: * * * * * /bin/execute/this/script.sh
+
+minute  (0 - 59)
+hour (0 - 23)
+day or month  (0 - 31)
+month  (1 - 12)
+day of week (0 - 6 ~ Sunday - Saturday)
+
+Special syntax:
+@reboot       after reboot, startup
+@yearly       "0 0 1 1 *"
+@annually     one time per year
+@monthly      "0 0 1 * *"
+@weekly        "0 0 * * 0"
+@daily          "0 0 * * *"
+@midnight   
+@hourly        Ch?y m?t l?n m?i gi?    "0 * * * *"
+
+------------------------Syn 2 Folder A to Folder
+rsync -avu --delete "/tmp/source/" "/var/www/html/target/"
+-a Do the sync preserving all filesystem attributes
+-v run verbosely
+-u only copy files with a newer modification time (or size difference if the times are equal)
+--delete delete the files in target folder that do not exist in the source
+
+------------------------CHECK SIZE OF FOLDER OR FILES
+sudo du -sh /<PATH OF FOLDER>
+ex:
+sudo du -shc /opt/demo/*   // check all size of files inside folder "demo"
+
+----------------------------ELK stack
+requirement lib:   java-1.8.0-openjdk.x86_64
+
+yum install java-1.8.0-openjdk.x86_64
+
+----------------------------JVM: java
+Change java version on Centos
+sudo update-alternatives --config java
+
+
+Setting  memory heap size for application running java: java -XshowSettings:vm -version
+
+java -XshowSettings:vm -XX:-UseContainerSupport -version  vs java -XshowSettings:vm -XX:+UseContainerSupport -version
+
+java -XshowSettings:vm -XX:InitialRAMPercentage=40.0 -XX:MinRAMPercentage=20.0 -XX:MaxRAMPercentage=80.0 -version
+java -XshowSettings:vm -Xms3000M -Xmx3500M -version
+java   -XshowSettings:vm -XX:+HeapDumpOnOutOfMemoryError -version
+java -XshowSettings:vm -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/usr/local/tomcat/logs/java_pid<pid>.hprof -XX:OnOutOfMemoryError="kill -9 %p" -Xmx512m
+
+
+java -XshowSettings:vm  -Xms3g -Xmx4g 
+
+https://dzone.com/articles/simplicity-and-value-of-hotspots-xshowsettings-fla
+---------------------Notice----------------------
+1. iostat: Monitor the storage subsystem functioning like the disk utilization, Read/Write rate, etc.
+
+2. meminfo: Memory information
+
+3. free: Memory overview
+
+4. mpstat: CPU activity
+
+5. netstat: A variety of network-related information
+
+6. nmon: Performance information (subsystems)
+
+7. pmap: Amount of memory used by the server processors
+
+8. ps, pstree: enlists the currently running processes
+
+9. sar (system activity reporter): CPU utilization, storage device activity, etc.
+
+10. s trace: diagnosing tool
+
+11. tcpdump: network overview
+
+12. top: monitors the active processes including CPU load, memory utilization, etc.
+
+13. uptime: the time duration the server has been running and how many users are currently using it.
+
+14. vmstat: monitor virtual memory like swap memory utilization report
+
+15. dmesg: monitors and displays all the server errors.
+
+Some other useful commands to get some information regarding the server are:
+runlevel ñ Information about the Present Run Level
+netstat ña ñ View the Network sessions
+netstat ñrn ñ To see the gateways configured
+who/finger ñ Users logged in detail
+ps ñef ñ To have a look on the complete set of running process and the related files
+sestatus ñ Verify SELINUX status
+service iptables status ñ To check firewall status
+ifconfig ña ñ To see the Network cards and configured IP Address
+
+
+
+----------------Windows----------------
+Ping scan
+C:\Users\Pham>for /l %i in (1,1,254) do @ping 192.168.1.%i -n 1 -w 100 | find "Reply"
+
+----------------Fix loi
+to install the C compiler: sudo apt-get install build-essential 
+
+
+=======================================
+ps -aux | grep 4200 | awk -F' ' '{print $2}' |head -n 1 | xargs  //print 1 line ps, output = xargs
+
+=======================================
 
 deb http://http.kali.org/kali kali-rolling main contrib non-free
 # For source package access, uncomment the following line
@@ -163,3 +364,61 @@ deb http://security.kali.org/kali-security sana/updates main contrib non-free
 deb http://old.kali.org/kali moto main non-free contrib
 # For source package access, uncomment the following line
 # deb-src http://old.kali.org/kali moto main non-free contrib
+
+================Telnet on Centos 7
+
+# rpm -qa | grep telnet
+telnet-server-0.17-59.el7.x86_64
+telnet-0.17-59.el7.x86_64
+
+
+ yum install telnet-server telnet
+ 
+ semanage port -a -t telnetd_port_t -p tcp
+ 
+ systemctl start telnet.socket
+ 
+  systemctl enable telnet.socket
+
+  
+  ============HTTPD PRoxy
+/etc/httpd/conf/httpd.conf  
+
+ProxyPass /jenkins http://192.168.1.200:8080/jenkins
+ProxyPassReverse /jenkins http://192.168.1.200:8080/jenkins
+
+
+ProxyPass /sonarqube http://192.168.1.200:9000
+ProxyPassReverse /sonarqube http://192.168.1.200:9000
+
+
+
+---------------------------------------------Centos 
+1. yum command not found
+error: can't create transaction lock on /var/lib/rpm/.rpm.lock (No such file or directory)
+
+
+
+
+
+
+-------Sonar
+ref https://appychip.com/jenkins-automated-build-trigger-using-github-pull-request-builder/
+
+
+     -Dsonar.projectKey=mraa-master \
+         -Dsonar.projectBaseDir=/PATH/TO/YOUR/MRAA/REPO/CLONE \
+         -Dsonar.sources=/PATH/TO/YOUR/MRAA/REPO/CLONE \
+         -Dsonar.inclusions='api/**/*,CMakeLists.txt,examples/**/*,imraa/**/*,include/**/*,src/*,src/**/*,tests/**/*' \
+         -Dsonar.cfamily.build-wrapper-output=/PATH/TO/YOUR/MRAA/REPO/CLONE/YOUR_BUILD_DIR/bw-output \
+         -Dsonar.host.url=https://sonarcloud.io \
+        -Dsonar.organization=mraa-github \
+       -Dsonar.login=YOUR_SONAR_LOGIN_TOKEN_HERE
+
+
+
+
+
+
+
+

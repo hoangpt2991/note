@@ -1,0 +1,10 @@
+cd /var/lib/jenkins/workspace/Testing_cat_eof/PrintXpress/PrintXpressReports/templates
+n=1
+for i in *;do
+ echo "Change backlash to forwardlash in linux syntax"
+ sed -i  's///////g' $i
+ echo "Recorect path in linux"
+ sed -i "s|images|images|g" $i
+ echo Done to process file $i
+done
+

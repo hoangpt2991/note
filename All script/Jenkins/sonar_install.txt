@@ -1,0 +1,152 @@
+// Jenkins job use to Set up SonarCube  22 march 2021
+
+
+pipeline {
+
+    agent any
+	
+    environment {
+		  
+		
+		
+		postgresVersion = "postgresql10"
+postgresNumber = "10"
+postgresFile = "postgresql-10"
+		//sonarVersion = "sonarqube-7.2.1" 
+		sonarVersion = "sonarqube-7.9.1"
+		sonarIP = "0.0.0.0"
+		 sonarPort = "9000"
+		
+		homePath = "/aig/dev"
+	 
+		sonarUser = "sonar.jdbc.username=sonar"
+	    	sonarPass = "sonar.jdbc.password=sonar"
+	        sonarwHost = "sonar.web.host=${sonarIP}"
+	        sonarwPort = "sonar.web.port=${sonarPort}"
+	    	sonarPostgresurl = "sonar.jdbc.url=jdbc:postgresql://localhost/sonar"
+	    	sonarUserrun = "#RUN_AS_USER="
+	    	sonarUserreplace = "RUN_AS_USER=sonar"
+	    
+	    
+
+    }
+	
+    stages {
+
+        stage('Setup Initial Requirement & Get resource') {
+			
+            steps {
+            echo "Executing the checking mandatory component"
+		    
+            }
+        } //end of stage Setup Initial Requirement
+		
+		//INSTALLATION jar command support installProductStage.sh
+		stage('Install SonarQube') {
+			
+            steps {
+               script {
+			   if(isUnix()) {
+				   
+                   sh '''
+					echo "Clear old configuration"
+					yum remove -y postgresql* && rm -rf /var/lib/pgsql/ || true
+					gpasswd -d sonar sonar || true
+					deluser sonar && delgroup sonar|| true 
+					rm -rf ${homePath}/sonarqube
+
+				   echo "Get repo for downloading postgresql"
+				   yum install https://download.postgresql.org/pub/repos/yum/reporpms/EL-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm -y  || true 
+				   yum install ${postgresVersion}-server ${postgresVersion} -y || true 
+				   /usr/pgsql-${postgresNumber}/bin/${postgresFile}-setup initdb || true
+
+				   	sed -i "s/ident/md5/g" /var/lib/pgsql/${postgresNumber}/data/pg_hba.conf
+					systemctl enable postgresql-${postgresNumber}.service
+					systemctl start postgresql-${postgresNumber}.service
+
+					echo "Change password initial setup Postgresql"
+					
+					echo "--------Create new DB and user for SonarQube--------"
+					sudo -u postgres psql -c "ALTER USER postgres WITH PASSWORD 'newpassword';"  || true
+					sudo -u postgres psql -c "CREATE USER sonar ;" || true
+					sudo -u postgres psql -c "ALTER USER sonar WITH ENCRYPTED password 'sonar';" || true
+					sudo -u postgres psql -c "CREATE DATABASE sonar OWNER sonar;" || true
+					
+
+					
+					echo "--------Download SonarQube resource--------"
+					wget https://binaries.sonarsource.com/Distribution/sonarqube/${sonarVersion}.zip
+					mkdir -p ${homePath}
+					 unzip ${sonarVersion}.zip -d ${homePath} && mv -f ${homePath}/${sonarVersion}/ ${homePath}/sonarqube
+					 sed -i "/jdbc.username=/c\${sonarUser}" ${homePath}/sonarqube/conf/sonar.properties
+ 					 sed -i "/jdbc.password=/c\${sonarPass}" ${homePath}/sonarqube/conf/sonar.properties
+					 sed -i "/=jdbc:postgresql:/c\${sonarPostgresurl}" ${homePath}/sonarqube/conf/sonar.properties
+					 sed -i "/sonar.web.host=/c\${sonarwHost}" ${homePath}/sonarqube/conf/sonar.properties
+					 sed -i "/sonar.web.port=/c\${sonarwPort}" ${homePath}/sonarqube/conf/sonar.properties
+
+						echo "-----Open Firewall Port Service-----"
+						sudo firewall-cmd --zone=public --permanent --add-port=${sonarPort}/tcp && sudo firewall-cmd --reload
+
+						echo "-----Add user group-----"
+						groupadd -f sonar && useradd -c "Sonar System User" -d ${homePath}/sonarqube -g sonar -s /bin/bash sonar || true
+						chown -R sonar:sonar ${homePath}/sonarqube || true
+						sed -i "/${sonarUserrun}/c\${sonarUserreplace}" ${homePath}/sonarqube/bin/linux-x86-64/sonar.sh
+
+                '''
+				}
+				else {
+					powershell"""
+				    
+					"""
+				} //end of else condition
+               }
+            }
+        }
+
+
+		stage('Setup service stage') {
+			
+            steps {
+  					script {
+					if(isUnix()) {
+					sh """
+                        echo "--------------------Setup SonarCube service--------------------"                                                        
+                                                     
+                        rm -rf /etc/systemd/system/sonar.service  || true
+
+
+ 						cp -rf /tmp/test/sonar.service /etc/systemd/system/
+                        cd /etc/systemd/system/ && chmod 755 sonar.service
+						sed -i "s|/opt|${homePath}|g" sonar.service || true
+
+						echo "update this params for Sonar version 7.x"
+						sudo sysctl -w vm.max_map_count=262144
+                        systemctl daemon-reload      
+                        systemctl restart sonar.service                             
+						systemctl enable sonar.service   
+						echo "User/Pass is admin/admin for initial setup"
+                           
+                    """
+				}
+				else {
+						powershell"""
+						echo "--------------------Setup Product Stage--------------------"
+
+					"""
+				}
+            }}
+			post {
+				always {
+					cleanWs()
+					}
+				}
+        } //end of stage Setup service
+                
+
+	} // end of stages section
+} //end of pipeline section
+
+
+
+
+// Issue "max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]"--> Resolve: use command line in //terminal "sysctl -w vm.max_map_count=262144"

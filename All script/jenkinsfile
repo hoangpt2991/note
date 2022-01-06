@@ -1,0 +1,55 @@
+//jenkinsfile_ECS_start_stop_on_Break_fix
+//AIG-9667
+pipeline {
+    agent any 
+    parameters {
+        choice(name: 'Option', choices: ['start', 'stop'], description: 'Action')
+
+    }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '5', artifactNumToKeepStr: '5'))
+        disableConcurrentBuilds()
+    }
+    environment {
+        // repositories
+		gitRepo="https://github.dxc.com/insurance/DIaaS-AU-Jenkins-Pipeline.git"
+		repoBranch="development"
+       
+
+		
+		
+    }
+    stages {
+        	
+		stage('Checkout code') { 
+			steps {
+				script {
+  				  def VERSION = VersionNumber projectStartDate: '', versionNumberString: '${BUILD_DATE_FORMATTED, "yyyy.MM.dd"}.${BUILD_NUMBER}', versionPrefix: ''
+				  echo "${VERSION}"
+				  currentBuild.displayName = VERSION
+
+                  echo "Checkout code from repo"
+				  checkout([$class: 'GitSCM', branches: [[name: "*/${repoBranch}"]], doGenerateSubmoduleConfigurations: false, extensions: [[$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [[path: 'COMMON']]]], submoduleCfg: [], userRemoteConfigs: [[credentialsId: '86586c0d-bcdf-4467-800f-1820598d0e28', url: "${gitRepo}"]]])
+                }
+            }
+        }
+
+        stage('Run ECS action') { 
+            steps {
+                 sh """
+                    source  "Scripts/auto_scaling.sh"
+                    auto_scaling_break_fix ${Option}
+                 """
+            }
+        }
+       
+    }
+
+    post {
+
+		always {
+				cleanWs()
+		}
+  }
+}
+

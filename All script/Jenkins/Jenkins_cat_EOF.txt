@@ -1,0 +1,28 @@
+########################################################################
+#### This jenkins file describe how EOF file works inside cat and EOF
+########################################################################
+
+pipeline {
+    agent any
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+                sh '''
+                cd ${WORKSPACE} && touch Dockerfile
+                set +x
+                cat <<-EOF> ${WORKSPACE}/Dockerfile
+FROM openjdk:1.8
+MAINTAINER bpham26
+WORKDIR /home/integral
+
+EOF'''
+            sh '''
+            echo "Final stage"
+            cat file.txt                
+            '''
+            }
+        }
+    }
+}
