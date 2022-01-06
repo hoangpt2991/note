@@ -1,0 +1,120 @@
+###########################Windows###########################
+1. Chuan bi:
++ Java: 1.8.x
++ File: jenkins, maven
+
+2. File 
++ Java 
+(cat install_silent.bat ==> jre-8u241-windows-x64.exe /s   [// auto install] )
++ File *.msi: manual install
+
+3. install jenkins
++ Run file.
+
+
+###########################Linux###########################
+curl --silent --location http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo | sudo tee /etc/yum.repos.d/jenkins.repo
+
+sudo rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key
+sudo yum install jenkins
+sudo systemctl start jenkins
+systemctl status jenkins
+
+*******************(Set up Envinronment)*******************
+Windows:
+1.	Windows 7: Right click My Computer and select Properties.
+Windows 8 and 10: Go to Control Panel > System > Advanced System Settings
+2.	Properties This PC,On the Advanced tab, select Environment Variables, and then find a Systems Variable called Path and add to it the path 
+for your \bin file, for example C:\Program Files\apache-maven-3.5.0\bin.
+3.	Check you have set the variable correctly by opening up command prompt (run + cmd) and typing mvn -version. 
+The output should show your Maven version.
+
+Case: "Fixing “mvn not recognized as an internal or external command” error"
+Part 1: set up in Path env
+M2_HOME: This is supposed to be a user variable that points towards your Maven directory.
+M2: This is an environment variable that points towards Maven’s bin folder. Example: $M2_HOME/bin
+Part 2: Set up on jenkins browser
+Manage Jenkins -> Global Tool Configuration -> Maven: set up name and MAVEN_HOME:[PATH]
+
+Linux:
+
+1.	Open the command terminal and enter the following
+$ export M2_HOME=/usr/local/apache-maven/apache-maven-3.3.9
+$ export M2=$M2_HOME/bin
+$ export MAVEN_OPTS=-Xms256m -Xmx512m
+2.	Now append the M2 variable to the system path.
+$ export PATH=$M2:$PATH
+3.	Check maven installed correctly, by running this command in a terminal: mvn -version. The output should show your Maven version.
+
+
+
+-----------------------set up master slave MODE---------------------------------------
+Set up Master&Slave:
+case 1: Window & Linux (Master - slave)
+Manage Jenkins -> Manage nodes -> New Node
++ Step 1: 
+-"Node name" ten cua node slave
+-stick "Permanent agent"
+-Configure Global Security > stick "TCP port for inbound agents - Random"
+OR
+Manage Jenkins => Configure Global Security => Enable security 
+=> TCP port for JNLP agents Set it to either Fixed (for this option also set the port number) or Random.
+
++ Step 2: 
+-Name:ten cua may slave
+-of executors: so luong core xu ly task
+-remote root directory: ten thu muc lam viec tren may chu Slave
+-Launch method: via SSH or Java web.
+----->Host: IP of slave host
+----->Credentials: Add Jenkins --> user and password of an account on slave host
+----->Host Key Verification Strategy: Non verifying.......
+-Node Properties:
+----->Tool Location: set up tool lien quan nhu Maven,git,etc....
+=> SAVE and check
+
+
+case 2: Linux & Window (Master - slave)
+
+
+
+case 3: Window (Master - slave)
+manage plugin --> Install plugins: "Slave SetupPlugin"
+Launch method: Launch agent by connecting it as the master
+
+
+---> Qua Slave host: access browser and use method #1: "Launch agent from browser on slave"
+
+Source:
+https://support.cloudbees.com/hc/en-us/articles/217423827-How-to-Install-Several-Windows-Slaves-as-a-Service-
+
+
+case 4: Linux (Master - slave)
+
+
+---------------------------Set UP Mail notification------------------------------
++++++++++++++=Manage Jenkins --> Configure system
+Email Notification & Email-extended Notification
+
+SMTP server	: smtp.gmail.com
+User Name: xxxx@gmail.com
+Password: abcdef
+SMTP Port: 465 (SSL)
+TLS/SSL: Required.
+
++++++++++++++Configure a project to send email at every build
+
+Click “Add post-build action”
+Click “Editable Email Notification”
+Click “Advanced Settings…”
+Click “Add Trigger”
+Click “Always”
+Save
+
+NOTICE: Disale quyen bao mat tren tai khoan gmail.
+https://www.360logica.com/blog/email-notification-in-jenkins/
+
+
+
+
+---------------------------------Plugin Version Build number---------------------------
+Access Plugin --> find "Version Number"

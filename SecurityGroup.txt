@@ -1,0 +1,98 @@
+mongorestore --drop --uri mongodb://devops:devops@10.95.0.197:27017/EV-DEV?authSource=admin\&replicaSet=diaas ./dum
+
+60.241.248.244/32
+
+
+
+sg-ff19c398 - Evereset Dominic IP
+
+HTTP	TCP	80	60.241.248.244/32	–
+Oracle-RDS	TCP	1521	60.241.248.244/32	–
+Custom TCP	TCP	1158	60.241.248.244/32	–
+All TCP	TCP	0 - 65535	117.216.45.0/24	–
+All TCP	TCP	0 - 65535	1.129.0.0/16	–
+All TCP	TCP	0 - 65535	60.242.180.51/32	–
+All TCP	TCP	0 - 65535	60.241.248.244/32	–
+All TCP	TCP	0 - 65535	168.1.24.237/32	–
+All TCP	TCP	0 - 65535	1.144.0.0/16	–
+All TCP	TCP	0 - 65535	168.1.43.122/32	–
+All traffic	All	All	60.241.248.244/32	–
+Custom TCP	TCP	8080 - 8585	60.241.248.244/32	–
+SSH	TCP	22	113.161.35.45/32	nduong9
+SSH	TCP	22	60.241.248.244/32	–
+SSH	TCP	22	27.33.24.173/32	–
+Custom TCP	TCP	12022	0.0.0.0/0	–
+LDAP	TCP	389	60.241.248.244/32	–
+RDP	TCP	3389	113.161.35.45/32	nduong9
+RDP	TCP	3389	60.241.248.244/32	–
+Custom TCP	TCP	65082 - 65083	0.0.0.0/0	–
+
+
+
+sg-e7392c83 - CSC 20 Lan (Everest)
+
+
+
+sg-4afce92e - Everest Default Group
+
+HTTP	TCP	80	0.0.0.0/0	lambda-Nb
+Custom TCP	TCP	4201	0.0.0.0/0	–
+Custom TCP	TCP	4201	::/0	–
+All TCP	TCP	0 - 65535	172.50.0.0/16	–
+Custom TCP	TCP	8080	::/0	–
+All traffic	All	All	165.225.112.152/32	–
+All traffic	All	All	172.31.0.0/16	–
+All traffic	All	All	sg-b5218fd0 / default	–
+All traffic	All	All	sg-4afce92e / Everest Default Group	–
+SSH	TCP	22	115.76.91.71/32	dnguyen261
+SSH	TCP	22	103.217.166.242/32	–
+SSH	TCP	22	171.239.245.230/32	–
+Custom TCP	TCP	8443	0.0.0.0/0	–
+Custom TCP	TCP	8443	::/0	–
+Custom TCP	TCP	8161	0.0.0.0/0	–
+Custom TCP	TCP	8161	172.50.0.0/16	–
+Custom TCP	TCP	8161	::/0	–
+HTTPS	TCP	443	0.0.0.0/0	–
+Custom TCP	TCP	10013	0.0.0.0/0	–
+RDP	TCP	3389	118.68.194.102/32	vtran40
+RDP	TCP	3389	165.225.124.238/32	aje22
+RDP	TCP	3389	165.225.112.152/32	tta9
+RDP	TCP	3389	171.239.245.230/32	–
+
+
+sg-3b71665f - Integral Application Sec Grp (Everest)
+
+
+Custom TCP	TCP	61616	0.0.0.0/0	activemq brokcer port
+Custom TCP	TCP	61616	::/0	activemq brokcer port
+Custom TCP	TCP	9090 - 9099	0.0.0.0/0	–
+MSSQL	TCP	1433	0.0.0.0/0	–
+HTTP	TCP	80	0.0.0.0/0	–
+Custom TCP	TCP	4200 - 4201	0.0.0.0/0	UI2 ports
+Custom TCP	TCP	4200 - 4201	::/0	UI2 ports
+Custom TCP	TCP	8443	0.0.0.0/0	–
+Custom TCP	TCP	8080 - 8088	0.0.0.0/0	–
+Custom TCP	TCP	8880	0.0.0.0/0	–
+Custom TCP	TCP	6400	0.0.0.0/0	–
+Custom TCP	TCP	9130	0.0.0.0/0	–
+RDP	TCP	3389	14.0.0.0/8	–
+RDP	TCP	3389	116.106.59.158/32	–
+HTTPS	TCP	443	0.0.0.0/0	–
+All ICMP - IPv4	ICMP	All	172.0.0.0/16	–
+Custom TCP	TCP	32773	0.0.0.0/0	temp
+Custom TCP	TCP	32773	::/0	temp
+Custom TCP	TCP	8001 - 8003	0.0.0.0/0	–
+All TCP	TCP	0 - 65535	20.139.229.64/32	dxc
+Custom TCP	TCP	8888	0.0.0.0/0	SOI port
+All traffic	All	All	172.31.0.0/16	–
+All traffic	All	All	172.50.0.0/16	–
+SSH	TCP	22	14.0.0.0/8	–
+SSH	TCP	22	115.73.8.133/32	Ngu
+Custom TCP	TCP	8440	0.0.0.0/0	–
+Custom TCP	TCP	5044	0.0.0.0/0	logstash
+Custom TCP	TCP	5044	::/0	logstash
+MYSQL/Aurora	TCP	3306	0.0.0.0/0	–
+Custom TCP	TCP	3000	0.0.0.0/0	express default
+Custom TCP	TCP	3000	::/0	express default
+Custom TCP	TCP	587	0.0.0.0/0	send an email by gmail
+Custom TCP	TCP	587	::/0	send an email by gmail

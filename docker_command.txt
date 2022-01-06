@@ -1,0 +1,281 @@
+#########################Basic#############################
+###########################################################
+install a new container with nginx image on fg
+docker container run --publish 8888:80 nginx   #[localhost:80]  ==> browser access: localhost_port:8888
+
+2. install a new container with nginx image on bg
+docker container run --publish 8888:80 --detach nginx # --detach run in bg
+
+3.List container in server
+docker container ls -a  #-a: all
+
+4. Stop container
+docker container stop <id>
+
+5.
+ docker container run --publish 8888:80 --detach --name test_tag_name nginx  #name tag
+
+6. Monitor logs of a container
+
+docker container logs test_tag_name  #   'test_tag_name' of name container
+
+7. Monitor top process of a container
+
+docker container top test_tag_name
+
+8. Remove one or multi container
+
+
+docker container rm <ID container 1> <....>
+
+
+docker container rm -f <ID container 1> <....> # in cases, containers are running
+
+9.
+
+docker container run --publish 8080:80 --name webhost -d nginx:1.11 nginx -T 
+#Option 
+#nginx:1.11 is version of nginx
+#-T : change CMD run on start
+#-d: run in background
+#--publish or -p
+
+
+10: docker ps vs docker container ls -a
+
+docker container ls # show container is running
+docker container ls -a #show all container
+
+
+
+11.
+
+docker container run -d -p 3306:3306 --name db -e MYSQL_RANDOM_PASSWORD=yes mysql
+#-e: edit parameter of ....
+
+12. show data about the container
+(volumes,config,port,etc)
+
+docker container inspect <name of container>
+
+13. show live performance data all containers
+docker container stats -a
+
+14. Docker Network
+
+docker network ls
+docker network inspect <argument>
+
+docker network create <name of network> --driver <overlay,host,null,bridge>
+docker network create <name of network> #bridge mode default
+docker network connect <ID of network> <ID of name container>
+
+#assign a network to new container  #bridge mode
+docker container run -d -p 3306:3306 --name db --network <name of created network> mysql
+
+15. Ping host
+
+docker container exec -it <container1> ping <container2>
+
+16. Docker Image
+
+17. Data volume
+
+docker container run -d --name mysql -e MYSQL_ALLOW_EMPTY_PASSWORD=True -v mysql-db:/vaf/lib/mysql mysql
+docker volume ls
+docker volume inspect <volume name>
+
+18. 
+docker service ls
+docker service ps <name>
+
+
+19. 
+docker stack ls
+
+#Update configure file docker stack .yml
+docker stack deploy -c <name of file stack>.yml <name of stack>
+
+20. Secrets storage: usernames and pass, TLS cert and keys, SSH key
+
+
+#docker secrete create <name of secret> <file>.txt
+docker secrete create psql_user <file>.txt
+
+
+echo "Acdfsljf" | docker secret create psql_pass
+
+docker secret ls
+
+docker service create --name psql --secret <name of secret user above> 
+--secret <name of secret pass> -e POSTGRES_PASSWORD_FILE=/run/secrets/psql_pass -e 
+POSTGRES_USER_FILE=/run/secrets/psql_user postgres
+
+
+docker service update --secret-rm
+
+21. Update things
+
+docker service update --publish-rm 8080 --public-add 9090:80 <name>
+docker service update --replicas 3 <ID>
+
+
+22. Docker swarm
+
+docker swarm init
+docker node ls
+
+#docker swarm join to cluster
+#step 1: create 3 nodes
+#step 2: configure this statement on #1 node which is leader
+docker swarm init
+#step 2.2: copy from this line:
+docker swarm join \ content sample..........................IP:port 
+#step 3: paste it to node 2 & 3 #node 2 & 3 are in worker role now
+#step 4: check on node 1
+docker node ls
+
+optional: update role of node 'N' to become manager
+docker node update --role manager <hostname of node>
+docker swarm join-token manager #xem lai token de join cluster
+#########################Advance###########################
+###########################################################
+
+1. Pulling image and run container
+=> docker image pull <name of service>
+=> docker image ls
+#create a container using pulled image
+=> docker container run -id --name demo alpine ash // image=alpine, command=ash
+2. Starting a container 
+=> docker container run -d -t -i ubuntu /bin/bash
+
+3. Looking at the container logs
+=> docker container run -d ubuntu /bin/bash -c "while [ true ]; do date; sleep 1; done"
+
+4. Stopping/Start/Restart a container
+=> docker stop $ID/$name
+
+5. Run docker -v option  (/var/www/html)
+=> docker run .... -v <source path>:<dest path> ID 
+
+10. Reading a container's metadata: While doing debugging, automation, and so on, we will need the container's configuration
+details. Docker provides the container inspect command to get those easily.
+
+=> ID=$(docker container run -d -i ubuntu /bin/bash)
+=> docker container inspect $ID
+
+
+* Filter IP of container: 
+=> docker container inspect --format='{{.NetworkSettings.IPAdress}}' $ID
+
+
+###########Search and pull images to local
+docker search <images>
+docker pull <name of images above>
+
+###########Remove image docker with forcely
+docker rmi -f $(docker images -a -q)
+
+
+---------------Use docker file-------------------
+
++ Dockerfile: used to create new images
+---Content
+FROM <name of service or OS>:<version>
+
+ENV <variable_1>=<value_1>
+ENV FILEBEAT_HOME=/usr/local/filebeat
+ENV TZ=Australia/Sydney 
+USER root
+#AIG-9904
+RUN apk add tzdata
+RUN cp /usr/share/zoneinfo/${TZ} /etc/localtime
+RUN echo ${TZ} > /etc/timezone
+###
+RUN mkdir -p /usr/local/filebeat/${FILEBEAT_VERSION} \
+&& chmod 775 /usr/local/filebeat/${FILEBEAT_VERSION}
+COPY ${FILEBEAT_VERSION} /usr/local/filebeat/${FILEBEAT_VERSION}
+
+RUN mkdir /app
+
+COPY target/*.jar /app
+
+RUN printf '#!/bin/sh\n\ncd /usr/local/filebeat/${FILEBEAT_VERSION}\n./filebeat -e -c filebeat.yml -d 'publish' &>/dev/null &\njava -jar /app/svu-processor-service-1.0.jar' > /app/entrypoint.sh
+RUN chmod 0755 /app/entrypoint.sh
+RUN chmod go-w /usr/local/filebeat/${FILEBEAT_VERSION}/filebeat.yml
+
+CMD sh -c "/app/entrypoint.sh"
+---content
+
+
+
+docker exec -it <name of docker> /bin/bash
+
+
++ Command to execute Dockerfile to Docker images:
+Command: docker build -t <tag_name> .
+-t: tag to image
+. : alias Dockerfile
+
+
++ Build docker from images:
+Command: docker run --name <set name> <image name>
+
+
+#set up new container and log in to prompt
++ docker run -it --name <name> -h <hostname> <image>
+
+#get image from a current container
+docker commit <name of container> <nameofimage:tag>
+
+
+#Remove all unused containers, networks, images (both dangling and unreferenced), and optionally, volumes.
+docker system prune
+
+
+#mount data from Host to Container
+docker run -it -v /path/from/hostDocker/data:/home/data --name <name1> <container ID>
+
+---Case create the second one container wanna mount that data: docker run -it --name <name2> --volumes-from <name1> <OS:tag>
+
+
+#create volume, container is removed but volume is still ok
+docker volume ls
+docker volume create <name volume> --> D2
+docker volume rm <nt>
+
+---mount to container
+docker run -it --name <name> --mount source=D2,target=/home/disk <containerID>
+
+---mount Data from Host to docker volume
+docker volume create --opt device=/..... --opt type=none o=bind <volume name>
+
+------How to Generate a Dockerfile from an Image
+1)
+$ sudo docker history [image_id_or_name]
+
+$ sudo docker history [image_id_or_name] --no-trunc $argv  | tac | tr -s ' ' | cut -d " " -f 5- | sed 's,^/bin/sh -c #(nop) ,,g' | sed 's,^/bin/sh -c,RUN,g' | sed 's, && ,\n  & ,g' | sed 's,\s*[0-9]*[\.]*[0-9]*[kMG]*B\s*$,,g' | head -n -1
+
+
+2)
+sudo docker run -v /var/run/docker.sock:/var/run/docker.sock --rm chenzj/dfimage [image_id_or_name]
+
+
+##########copy file from docker to host
+
+docker cp 3d8af6e52c09:/usr/local/tomcat/logs/newbusiness.hprof.log /tmp/
+docker cp <containerId>:/file/path/within/container /host/path/target
+
+
+
+########## Docker login credentials
+
+docker login hoangpt2991/43..8O@
+
+
+
+
+##########################################
+########## REMOVE DOCKER CONTAINER, IMAGES
+docker rm $(docker ps -a -q)
+docker rmi $(docker images -q)

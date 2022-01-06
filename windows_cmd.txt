@@ -1,0 +1,100 @@
+@@@@@@@@Use date time 
+
+echo Archive_%date:~-4,4%%date:~-10,2%%date:~-7,2%_%time:~0,2%%time:~3,2%%time:~6,2%.zip
+
+
+Output
+
+Archive_20111011_ 93609.zip
+
+
+@@@@@@@Use 7zip commandline to add archive.
+
+7z a FILE_%date:~-4,4%%date:~-10,2%%date:~-7,2%.zip key/*
+
+################ change / to \
+$workingDir_no_ps = "/abc/dev/"
+$change_word = ${workingDir_no_ps} -replace "[\\/]","\" --> \abc\dev\
+
+
+################ NSSM create service
+
+Get-WmiObject win32_service | ?{$_.PathName -like '*nssm*'} | select Name, DisplayName, State, PathName
+
+
+################ Remove service via cmd
+
+sc.exe delete <service name>
+
+
+################ Steps to kill the process which is using port 8080
+Step 1 : Find Process id in windows using command prompt
+netstat -ano | findstr 8080
+Step 2 : Kill the process using command prompt
+taskkill  /F  /PID  <Process Id>
+
+
+###################################################################
+############ POWERSHELL 
+###################################################################
+#### Variable
+
+$<name of variable> = <value>
+EX: $var_a = 5 ==> echo $var_a ==> output: 5
+#### ENV
+
+$PSVersionTable : show Powershell version on system
+
+
+#### Remove IP
+Remove-Item 'D:\temp\Test Folder' -Recurse
+
+
+#### SERVICE
+
+Stop-Service -Force -DisplayName ""
+
+
+Start-Service -DisplayName ""
+
+#### Copy FILE
+
+Copy-Item
+    [-Path] <String[]>
+    [[-Destination] <String>]
+    [-Container]
+    [-Force]
+    [-Filter <String>]
+    [-Include <String[]>]
+    [-Exclude <String[]>]
+    [-Recurse]
+    [-PassThru]
+    [-Credential <PSCredential>]
+    [-WhatIf]
+    [-Confirm]
+    [-FromSession <PSSession>]
+    [-ToSession <PSSession>]
+    [<CommonParameters>]
+
+
+
+#### input value
+test.bat 5 10 15
+
+
+The first parameter is 5
+The second parameter is 10
+The third parameter is 15
+
+
+##Script##
+@echo off
+echo The first parameter is %1
+echo The second parameter is %2
+echo The third parameter is %3
+
+
+
+##########Search service via port
+Get-Process -Id (Get-NetUDPEndpoint -LocalPort YourPortNumberHere).OwningProcess
+Get-Process -Id (Get-NetTCPConnection -LocalPort YourPortNumberHere).OwningProcess

@@ -1,0 +1,430 @@
+_________________________________Basic_________________________
+
+How to fix “Filename too long error” during git clone
+
+git config --system core.longpaths true
+
+---Github Begin---
+
+echo "# new" >> README.md
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/hoangpt2991/new.git
+git push -u origin master
+
+
+0.Cach gan tai khoan git vao thu muc hien hanh (terminal)
+git config --global user.name "Your name here"
+git config --global user.email "your_email@example.com"
+
+
+
+ ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+ add ssh key to github
+1.ssh-keygen -t rsa -b 4096 -C "youremail"
+2.eval $(ssh-agent -s)
+3.ssh-add ~/.ssh/id_rsa
+4.clip < ~/.ssh/id_rsa.pub(it copies the ssh key that has got generated)
+5.then go to your remote repository on github and goto settings-> SSH and GPG keys ->new SSH key ->enter any title and paste the copied SSH key and save it
+6. now give git push origin master 
+-----------------------------Usually-------------------------
+-Check branch 
+git branch --show-current
+
+-Revert file after commit
+git reset <filename>
+-Revert after send git push, back to unchanged stage
+git reset HEAD^ --hard
+git push origin -f    //revert on remote repo
+
+-git remote show origin
+-----------------------------Usually-------------------------
+
+#Và cuối cùng add lại origin cho sub-project
+git remote add origin sub-project-link
+2.1 Khoi tao git: git init
+2.2 Cap nhat code moi: git pull origin <branch>
+2.3 Hop nhat branch
+# để hợp nhất nhánh branch-name vào nhánh master
+git merge <branch-name>
+
+
+
+
+-----------Branch
+
+2. Tao remotes
+git remote -v
+==> 
+origin link (fetch)
+origin link (push)Tạo remote mới cho super-project
+
+git remote add company super-project-link
+
+
+
+
+======To delete Locally - (Normal),
+
+git branch -d my_branch
+If your branch in rebasing/merging progress and that was not done properly means, you will get an error Rebase/Merge in progress so in that case, you won't be able to delete your branch.
+
+So either your need to solve rebasing/merging otherwise you can do force Delete by using,
+
+git branch -D my_branch
+======To delete in Remote:
+
+git push --delete origin my_branch
+======can do the same using ,
+
+git push origin :my_branch   # easy to remember both will do the same.
+
+
+
+
+
+
+
+
+#xoa origin remote
+git remote remove origin
+
+2.4 Check status:
+git status
+#Xem thay đổi (chưa đc add) của những file hiện tại
+git diff 
+
+#Xem thay đổi (đã được add, chưa commit)
+git diff --cached
+
+
+#Xem thay đổi giữa local mà master
+git diff origin/master
+
+#Xem thay đổi giữa hai commits
+git diff COMMIT1_ID COMMIT2_ID
+
+#Xem những files thay đổi giữa hai commits
+git diff --name-only COMMIT1_ID COMMIT2_ID
+
+#Xem thay đổi trước khi push
+git diff --cached origin/master
+
+Xem thông tin cụ thể của một commit
+git show COMMIT_ID
+3.Branch
+#super-project có 2 branch là master(mặc định) và develop
+#và mình sẽ chỉ code trên develop branch, còn chỉ khi release xong
+#các mốc cố định thì mới merge code từ develop vào master.
+
+#create branch
+git checkout -b <new branch>
+
+#change name of branch
+git branch -m <tên branch sau khi đổi>
+
+# Danh sách branch
+git branch
+ 
+# tạo mới branch
+git branch (<name>)
+ 
+# Di chuyển từ branch hiện tại đến một branch khác bằng tên branch đó
+git checkout <name>
+ 
+# Tạo và di chuyển từ branch hiện tại đến một branch mới
+git checkout -b <name>
+----------------------File
+
+#remove a commit
+git commit -am "implement search ui"
+
+#check changed file
+git status
+
+#add all file to commit
+git add .
+
+#add single file
+git add <name of file>
+
+--------------------------Lam viec voi commit
+
+# Tuỳ vào từng trường hợp mà ta có 3 cách sau để đưa lịch sử commit về như cũ
+ 
+# 1. Chỉ đưa HEAD về như cũ
+$ git reset --soft HEAD~
+ 
+# 2. Đưa HEAD và index về như cũ
+$ git reset HEAD~
+ 
+# 3. Đưa cả index, working tree về 1 commit trước đó
+$ git reset --hard HEAD~
+
+#Nếu thay đổi lịch sử commit sẽ dẫn đến tình trạng lộn xộn nên ta cầm dùng commit xoá để giải quyết:
+git revert <commit>
+
+#Khi lỡ tay commit nhầm sang một branch khác
+# Đầu tiên là tạo một branch khác chứa trạng thái mà ta đã commit
+$ git branch other-branch
+ 
+# Đưa HEAD, index của master về 1 commit trước đó
+$ git reset --hard HEAD~
+ 
+# Check out sang branch có commit trước đó
+$ git checkout other-branch
+
+###############################xoa cac file khong can thiet
+# Đầu tiên là add＆commit tất cả những thứ cần thiết lại
+# Nếu không làm như thế này thì những file này cũng bị xoá mất đó
+$ git add <file cần commit>
+$ git commit -m "commit message"
+ 
+# Dùng git stash để sơ tán cả những file untracked
+$ git stash -u
+ 
+# drop các thứ đã stash để xoá đi
+$ git stash drop
+
+# Kiểm tra lại các file sẽ xoá cho chắc
+$ git clean -n
+ 
+# Tiến hành xoá bỏ
+$ git clean -f
+####################################
+
+Issue: Khi lỡ tay xoá mất một commit cực kì cực kì quan trọng (git reset --hard)
+
+# Đầu tiên là xem lại toàn bộ lịch sử commit
+$ git reflog
+ 
+# Từ đó chọn commit muốn phục hồi và khôi phục lại
+# ví dụ）git reset --hard HEAD@{2}
+$ git reset --hard <commit>
+*************END*************
+
+Issue: Khi lỡ tay xoá mất branch và muốn lấy lại
+# Đầu tiên là xem lại toàn bộ lịch sử commit
+$ git reflog
+ 
+# Từ các commit này, chọn rồi tạo branch mới
+# ví dụ）git branch new-branch HEAD@{2}
+$ git branch <tên branch> <commit>
+*************END*************
+
+Issue: Khi có conflict trong quá trình rebase
+#Khi không merge mà tiến hành rebase thì nếu có conflict, chắc hẳn là hoảng loạn rồi:
+
+# Khi đang ở branch1 rồi rebase từ branch2 vào
+$ git rebase branch2
+ 
+~~ Phát sinh conflict ~~
+ 
+# Sẽ trở thành branch không tên nền cần phải chú ý
+$ git branch
+ 
+* (no branch, rebasing branch2)
+  branch1
+  branch2
+  master
+ 
+# Hãy cố gắng giải quyết các conflict
+ 
+# Sau khi hoàn thành, ta add rồi tiến hành rebase
+$ git add <tên file>
+ 
+# Thay đổi commit
+$ git commit --amend
+ 
+$ git rebase --continue
+*************END*************
+
+
+
+Issue: Khi đã merge nhưng lại muốn trở lại như lúc trước
+# tiến hành merge
+$ git checkout <tên brach nguồn>
+$ git merge <tên branch muốn merge>
+ 
+# Sau khi merge, nhưng lại muốn trở lại như trước thì làm như sau
+# Nếu chỉ định là ORIG_HEAD thì có thể trở lại trạng thái trước khi merge
+$ git reset --hard ORIG_HEAD
+*************END*************
+
+Issue: Lỡ tay push force lên master trên remote
+ 
+# Cái này ko được làm đâu nhé, push force
+$ git commit -m "commit message"
+$ git push -f origin master
+ 
+# Nếu là một công ty nghiêm túc thì đến đây chắc chắn sẽ nổi giận đấy
+ 
+# Nếu muốn đưa về 1 commit tước đó thì làm như sau
+$ git push -f origin HEAD~:master
+
+##local
+
+$ git reset HEAD~
+$ git push -f origin master
+*************END*************
+
+
+=================> Process <====================
+#Xong phần commit code, đến phần rebase những code đã thay đổi đó đến develop branch để xem có xung đột với code của develop không, 
+#vì team có nhiều người, đôi lúc người ta cũng thay đổi code ở chỗ mình thay đổi, và nếu code của người ta đã được merged trước 
+#vào develop thì code của mình đã trở nên cũ và gây xung đột, cho nên, bắt buộc phải rebase code trong mọi trường hợp tạo pull request.
+
+-Trước hết phải chuyển qua develop branch: git checkout develop
+-Sau đó, pull code mới nhất từ develop về: git pull company develop
+-Sau khi pull xong thì chuyển qua lại search_ui của chúng ta: git checkout search_ui
+-Tiếp, rebase code với develop: git rebase -i develop
+-Check trạng thái của branch: git status
+-Nếu thành công thì mọi chuyện đều tốt đẹp, nhưng lỡ may bị conflict thì sẽ hiện 1 danh sách các file bị xung đột. 
+Nhiệm vụ của chúng ta là sửa từng file đó, thống nhất code cũ và mới. Khi đã sửa xong toàn bộ thì chạy thử project,
+nếu chạy được ngon lành thì tiếp tục các bước sau, nếu chưa chạy được thì xem lại các file đã sửa rồi giải quyết vấn đề.
+git add .
+ 
+//hoặc
+  
+git add changed_file_link_1
+git add changed_file_link_2
+
+-Sau đó tiếp tục rebase: git rebase --continue
+-Xong phần rebase, bước cuối cùng dưới project là push code đó lên github của mình, 
+chính là origin remote mà mình tạo ở trên: git push origin search_ui -f
+
+source
+https://topdev.vn/blog/combo-cac-lenh-git-du-dung-trong-mot-du-an-cho-nguoi-moi-bat-dau/
+__________________________________Fix_________________________________________________
+# Rename the local branch to the new name
+git branch -m <old_name> <new_name>
+
+# Delete the old branch on remote - where <remote> is, for example, origin
+git push <remote> --delete <old_name>
+ 
+# Or shorter way to delete remote branch [:]
+git push <remote> :<old_name>
+ 
+# Push the new branch to remote
+git push <remote> <new_name>
+ 
+# Reset the upstream branch for the new_name local branch
+git push <remote> -u <new_name>
+
+$ git commit --amend
+# Then, change commit message
+
+git reset --soft HEAD^     # Use --soft if you want to keep your changes
+git reset --hard HEAD^     # Use --hard if you don't care about keeping the changes you made
+
+
+
+
+ Loại file ra khỏi commit vừa tạo
+ 
+ git reset --soft HEAD^ 
+ 
+# or
+ 
+git reset --soft HEAD~1
+ 
+# Then reset the unwanted files in order to leave them out from the commit:
+git reset HEAD path/to/unwanted_file
+ 
+# Now commit again, you can even re-use the same commit message:
+git commit -c ORIG_HEAD
+ 
+Cách trên thì nguy hiểm quá, như này dễ hơn nè =))
+
+git reset HEAD^ -- path/to/file
+git commit --amend --no-edit
+
+
+Khi bạn commit nhầm vào một nhánh khác
+
+# Get commit hash 
+ 
+# Switched to destination branch
+git checkout destination_branch
+ 
+$ git cherry-pick <commit_hash>
+-----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+Chuyển các commit từ branch này sang branch khác
+
+master A - B - C - D - E
+
+newbranch     C - D - E
+             /
+master A - B
+
+Trường hợp đã có nhánh đó rồi
+
+git checkout existingbranch
+git merge master         # Bring the commits here
+git checkout master
+git reset --keep HEAD~3  # Move master back by 3 commits.
+git checkout existingbranch
+
+-----------------------------------------------------------------------------
+Trường hợp muốn cắt 3 commit kia sang nhánh mới
+
+git branch newbranch      # Create a new branch, containing all current commits
+git reset --keep HEAD~3   # Move master back by 3 commits (Make sure you know how many commits you need to go back)
+git checkout newbranch    # Go to the new branch that still has the desired commits
+# Warning: after this it's not safe to do a rebase in newbranch without extra care.
+
+Giả sử ta ta có
+C commit: 9aa1233
+D commit: 453ac3d
+E commit: 612ecb3
+ 
+ 
+git checkout newbranch
+git cherry-pick 612ecb3~1..9aa1233
+ 
+# git cherry-pick applies those three commits to newbranch.
+-----------------------------------------------------------------------------
+
+Nhỡ tay xóa commit và muốn khôi phục lại
+
+Khi bạn nhỡ tay git reset --hard HEAD~1 và phát hiện ngay thì chỉ cần sử dụng ngay git reset --hard HEAD@{1}
+Còn không thì hãy bình tĩnh xem lịch sử các commit bằng lệnh git reflog Sau đó tìm commit muốn phục và
+khôi phục bằng lệnh git reset --hard <commit_hash>
+
+Khi lỡ tay xoá mất branch và muốn lấy lại
+
+Khi bạn đã commit rồi thì chứ yên tâm sẽ chẳng bao giờ có thể mất được code đâu chứ bình tĩnh =)) 
+Đầu tiên hãy xem lại hết lịch sử commit bằng cách git reflog hãy tìm commit bạn đã commit ở branch bạn xóa, 
+sau đó sử dụng git branch <new_branch> <commit_hash> ta có thể thay commit hash bằng HEAD@{n}
+
+
+Sau khi merge mà không tự tin lắm muốn trở lại trước lúc merge
+
+ 
+git reset --hard ORIG_HEAD
+
+
+
+
+Nhỡ pull về mà conflic nhiều quá, fix không nổi nản quá muốn trở lại
+
+git merge --abort
+or
+git reset --hard ORIG_HEAD
+
+
+------------Show git config global
+git config --list
+git config --list --show-origin
+
+
+
+source: 
+https://techtalk.vn/huong-dan-su-dung-git-tren-linux-window.html
+
+https://topdev.vn/blog/19-bi-kip-khi-pham-sai-lam-voi-git-ban-co-the-dung/
+https://topdev.vn/blog/mot-vai-kho-khan-sai-lam-su-co-voi-git-toi-tung-gap-phai-va-toi-da-giai-quyet-no-the-nao/?fbclid=IwAR16sNdLQuu6Qa5B9GW3hGmnrBs3OBYteItD7yOQu8iyuAnkOzQmVQZxG9I
+https://topdev.vn/blog/mot-so-cau-hoi-ve-git-cho-nguoi-moi-tap-tanh/
+https://topdev.vn/blog/tap-hop-nhung-cau-lenh-git-huu-dung/
